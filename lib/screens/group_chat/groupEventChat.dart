@@ -13,6 +13,7 @@ import 'package:refriend/cubit/groupMembers_cubit.dart';
 import 'package:refriend/models/groupEvents.dart';
 import 'package:refriend/models/groupMembers.dart';
 import 'package:refriend/screens/chat/ChatUINew.dart';
+import 'package:refriend/screens/group_chat/group_bigView.dart';
 import 'package:refriend/services/group_service.dart';
 import 'package:refriend/widgets/avatar.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
@@ -57,9 +58,16 @@ class _GroupEventChatState extends State<GroupEventChat> {
                         ))),
                 GestureDetector(
                   onTap: () {
-
-
-                    
+                    MaterialPageRoute(
+                        builder: (context) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider<GroupMembersCubit>(
+                                    create: (BuildContext context) =>
+                                        GroupMembersCubit(widget.groupcode)
+                                          ..getMembersData())
+                              ],
+                              child: GroupEventBigView(),
+                            ));
                   },
                   child: listViewItemForMainScreen(
                       context, widget.groupChatName, widget.groupPictureUrl),
