@@ -26,8 +26,10 @@ class _SignInState extends State<SignIn> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final AuthService _auth = AuthService();
 
-  String error;
+  String error = "";
 
+  double gapDivider = 12;
+  bool _isObscure = false;
   final _emailSignIn = TextEditingController();
   final _passwordSignIn = TextEditingController();
   bool isLoading = false;
@@ -49,7 +51,7 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 children: [
                   customWave(context),
-                  SizedBox(height: getHeight(context) / 25),
+                  SizedBox(height: getHeight(context) / 30),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                     child: Column(
@@ -81,7 +83,7 @@ class _SignInState extends State<SignIn> {
                       ],
                     ),
                   ),
-                  SizedBox(height: getHeight(context) / 25),
+                  SizedBox(height: getHeight(context) / 30),
                   Padding(
                     padding: const EdgeInsets.all(24.0),
                     child: Column(
@@ -99,7 +101,56 @@ class _SignInState extends State<SignIn> {
                           style: GoogleFonts.roboto(
                               color: CustomColors.fontColor, fontSize: 20),
                         ),
-                        passwordField("Enter your Password", _passwordSignIn),
+                        TextFormField(
+                          validator: (value) {
+                            if (value.isNotEmpty && value.length > 8) {
+                              return null;
+                            } else if (value.length < 8 && value.isNotEmpty) {
+                              return "Your password should be 8 letters long";
+                            } else {
+                              return "Please enter your Password";
+                            }
+                          },
+                          controller: _passwordSignIn,
+                          cursorColor: CustomColors.fontColor,
+                          obscureText: _isObscure,
+                          style: GoogleFonts.roboto(
+                              color: CustomColors.fontColor, fontSize: 20),
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isObscure = !_isObscure;
+                                });
+                              },
+                              icon: Icon(_isObscure
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                            ),
+                            border: OutlineInputBorder(),
+                            hintText: "Enter your Password",
+                            hintStyle: TextStyle(
+                                fontSize: 15, color: CustomColors.hintolor),
+                            errorStyle:
+                                TextStyle(color: CustomColors.custom_pink),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 1, color: CustomColors.fontColor),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 1, color: CustomColors.fontColor),
+                            ),
+                            labelStyle: TextStyle(
+                                fontSize: 16, color: CustomColors.fontColor),
+                            errorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: CustomColors.custom_pink)),
+                            focusedErrorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: CustomColors.custom_pink)),
+                          ),
+                        ),
                         SizedBox(height: getHeight(context) / 50),
                         GestureDetector(
                           onTap: () {
@@ -224,10 +275,19 @@ class _SignInState extends State<SignIn> {
                                     color: CustomColors.maincolor),
                               )),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(error,
+                                style:
+                                    TextStyle(color: CustomColors.custom_pink)),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  SizedBox(height: getHeight(context) / 10),
+                  SizedBox(height: getHeight(context) / gapDivider),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         fixedSize: Size(
@@ -237,6 +297,9 @@ class _SignInState extends State<SignIn> {
                         shape: CircleBorder()),
                     onPressed: () async {
                       if (!_formKey.currentState.validate()) {
+                        setState(() {
+                          gapDivider = 28;
+                        });
                         return;
                       } else {
                         setState(() {
@@ -280,7 +343,7 @@ class _SignInState extends State<SignIn> {
                             size: 50,
                           ),
                   ),
-                  SizedBox(height: getHeight(context) / 10),
+                  SizedBox(height: getHeight(context) / 14),
                   Visibility(
                     visible: MediaQuery.of(context).viewInsets.bottom == 0,
                     child: GestureDetector(

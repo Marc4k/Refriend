@@ -4,24 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:refriend/models/user.dart';
-import 'package:refriend/notificationTest.dart';
-
-import 'package:refriend/screens/group_chat/groupEventChat.dart';
-
-import 'package:refriend/screens/group_chat/group_bigView.dart';
-
 import 'package:refriend/screens/createGroup.dart';
+import 'package:refriend/screens/group_chat/group_bigView.dart';
 import 'package:refriend/screens/SingUpIN/signIn.dart';
 import 'package:refriend/screens/SingUpIN/signUpFirst.dart';
 import 'package:refriend/screens/SingUpIN/signUpSecond.dart';
 import 'package:refriend/screens/SingUpIN/signUpThird.dart';
-import 'package:refriend/screens/SingUpIN/welcomeScreen.dart';
 import 'package:refriend/screens/home.dart';
-import 'package:refriend/screens/joinGroup.dart';
 import 'package:refriend/screens/settings.dart';
 import 'package:refriend/services/auth_service.dart';
-import 'package:refriend/test.dart';
-
 import 'package:refriend/wrapper.dart';
 
 void main() async {
@@ -45,11 +36,11 @@ class MyApp extends StatelessWidget {
           "/signUpFirst": (context) => SignUpFirst(),
           "/signUpSecond": (context) => SignUpSecond(),
           "/signUpThird": (context) => SignUpThird(),
-          "/createGroup": (context) => CreateGroup(),
+          "/createGroup": (context) => CreateGroupScreen(),
           "/groupEventBig": (context) => GroupEventBigView(),
           "/homescreen": (context) => Homescreen(),
           "/settings": (context) => Settings(),
-          "/joinGroup": (context) => JoinGroup(),
+
         },
       ),
     );

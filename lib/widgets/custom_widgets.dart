@@ -212,11 +212,11 @@ Widget customTextfield(
       labelText: '$label',
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(17)),
-        borderSide: BorderSide(width: 2, color: CustomColors.fontColor),
+        borderSide: BorderSide(width: 1, color: CustomColors.fontColor),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(17)),
-        borderSide: BorderSide(width: 2, color: CustomColors.fontColor),
+        borderSide: BorderSide(width: 1, color: CustomColors.fontColor),
       ),
       labelStyle: TextStyle(fontSize: 16, color: CustomColors.fontColor),
     ),

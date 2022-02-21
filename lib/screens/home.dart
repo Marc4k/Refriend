@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
@@ -26,6 +27,11 @@ class Homescreen extends StatefulWidget {
   @override
   _HomescreenState createState() => _HomescreenState();
 }
+
+bool isLoadingJoinGroup = false;
+String error = "";
+final _inviteCodeController = TextEditingController();
+GroupService _group_service = GroupService();
 
 class _HomescreenState extends State<Homescreen> {
   AuthService _auth = AuthService();
@@ -91,18 +97,6 @@ class _HomescreenState extends State<Homescreen> {
           ),
         ],
       ),
-      /* floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await Navigator.pushNamed(context, "/createGroup");
-            context.read<GroupDataCubit>().getYourGroups();
-          },
-          child: Icon(
-            Icons.add,
-            size: 50,
-          ),
-          backgroundColor: CustomColors.custom_pink,
-        ),*/
-
       floatingActionButton: ExpandableFab(
         distance: 110.0,
         children: [
@@ -115,7 +109,111 @@ class _HomescreenState extends State<Homescreen> {
           ),
           ActionButton(
             onPressed: () async {
-              await Navigator.pushNamed(context, "/joinGroup");
+              await showModalBottomSheet(
+                  isScrollControlled: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        topLeft: Radius.circular(20)),
+                  ),
+                  backgroundColor: CustomColors.backgroundColor2,
+                  context: context,
+                  builder: (context) {
+                    return Padding(
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.42,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 35),
+                              Text(
+                                "Join a group",
+                                style: GoogleFonts.righteous(
+                                  textStyle: TextStyle(
+                                    color: CustomColors.maincolor,
+                                    fontSize: 25,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 25),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(25, 0, 25, 0),
+                                  child: Text(
+                                    "Group Code",
+                                    style: GoogleFonts.roboto(
+                                        color: CustomColors.fontColor,
+                                        fontSize: 20),
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(25, 5, 25, 5),
+                                child: emailField(
+                                    "Enter your Code", _inviteCodeController),
+                              ),
+                              Text(error,
+                                  style: TextStyle(
+                                      color: CustomColors.custom_pink)),
+                              SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height / 20),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    fixedSize: Size(getHeight(context) / 10,
+                                        getHeight(context) / 10),
+                                    primary: CustomColors.custom_pink,
+                                    elevation: 5,
+                                    shape: CircleBorder()),
+                                onPressed: () async {
+                                  setState(() {
+                                    isLoadingJoinGroup = true;
+                                  });
+                                  dynamic result = await _group_service
+                                      .joinGroup(_inviteCodeController.text);
+                                  if (result == null) {
+                                    setState(() {
+                                      error = "The Code is not valid!";
+                                      _inviteCodeController.clear();
+                                      isLoadingJoinGroup = false;
+                                    });
+                                  }
+                                  if (result == true) {
+                                    _inviteCodeController.clear();
+                                    setState(() {
+                                      error = "";
+                                      isLoadingJoinGroup = false;
+                                    });
+                                  }
+                                },
+                                child: isLoadingJoinGroup
+                                    ? SpinKitWave(
+                                        color: Colors.white,
+                                        size: 15,
+                                      )
+                                    : Icon(
+                                        Icons.check,
+                                        size: 50,
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  });
+              _inviteCodeController.clear();
+              error = "";
               context.read<GroupDataCubit>().getYourGroups();
             },
             icon: const Icon(Icons.group_add),

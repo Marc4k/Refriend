@@ -20,12 +20,21 @@ class SignUpSecond extends StatefulWidget {
 }
 
 class _SignUpSecondState extends State<SignUpSecond> {
+  double gapDividerBottom = 16;
+  double gapDividerTop = 33;
   bool isLoading = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _email = TextEditingController();
   final _password1 = TextEditingController();
   final _password2 = TextEditingController();
   String error = "";
+
+  bool first = false;
+  bool second = false;
+  bool third = false;
+
+  bool _isObscure1 = true;
+  bool _isObscure2 = true;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +52,7 @@ class _SignUpSecondState extends State<SignUpSecond> {
               child: Column(
                 children: [
                   customWave(context),
-                  SizedBox(height: getHeight(context) / 25),
+                  SizedBox(height: getHeight(context) / gapDividerTop),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
                     child: Align(
@@ -59,7 +68,7 @@ class _SignUpSecondState extends State<SignUpSecond> {
                       ),
                     ),
                   ),
-                  SizedBox(height: getHeight(context) / 25),
+                  SizedBox(height: getHeight(context) / gapDividerTop),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
                     child: Column(
@@ -77,14 +86,112 @@ class _SignUpSecondState extends State<SignUpSecond> {
                           style: GoogleFonts.roboto(
                               color: CustomColors.fontColor, fontSize: 20),
                         ),
-                        passwordField("Enter your Password", _password1),
+                        TextFormField(
+                          validator: (value) {
+                            if (value.isNotEmpty && value.length > 8) {
+                              return null;
+                            } else if (value.length < 8 && value.isNotEmpty) {
+                              return "Your password should be 8 letters long";
+                            } else {
+                              return "Please enter your Password";
+                            }
+                          },
+                          controller: _password1,
+                          cursorColor: CustomColors.fontColor,
+                          obscureText: _isObscure1,
+                          style: GoogleFonts.roboto(
+                              color: CustomColors.fontColor, fontSize: 20),
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isObscure1 = !_isObscure1;
+                                });
+                              },
+                              icon: Icon(_isObscure1
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                            ),
+                            border: OutlineInputBorder(),
+                            hintText: "Enter your Password",
+                            hintStyle: TextStyle(
+                                fontSize: 15, color: CustomColors.hintolor),
+                            errorStyle:
+                                TextStyle(color: CustomColors.custom_pink),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 1, color: CustomColors.fontColor),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 1, color: CustomColors.fontColor),
+                            ),
+                            labelStyle: TextStyle(
+                                fontSize: 16, color: CustomColors.fontColor),
+                            errorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: CustomColors.custom_pink)),
+                            focusedErrorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: CustomColors.custom_pink)),
+                          ),
+                        ),
                         SizedBox(height: getHeight(context) / 15),
                         Text(
                           "Repeate Password",
                           style: GoogleFonts.roboto(
                               color: CustomColors.fontColor, fontSize: 20),
                         ),
-                        passwordField("Enter your Password again", _password2),
+                        TextFormField(
+                          validator: (value) {
+                            if (value.isNotEmpty && value.length > 8) {
+                              return null;
+                            } else if (value.length < 8 && value.isNotEmpty) {
+                              return "Your password should be 8 letters long";
+                            } else {
+                              return "Please enter your Password";
+                            }
+                          },
+                          controller: _password2,
+                          cursorColor: CustomColors.fontColor,
+                          obscureText: _isObscure2,
+                          style: GoogleFonts.roboto(
+                              color: CustomColors.fontColor, fontSize: 20),
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  _isObscure2 = !_isObscure2;
+                                });
+                              },
+                              icon: Icon(_isObscure2
+                                  ? Icons.visibility
+                                  : Icons.visibility_off),
+                            ),
+                            border: OutlineInputBorder(),
+                            hintText: "Enter your Password again",
+                            hintStyle: TextStyle(
+                                fontSize: 15, color: CustomColors.hintolor),
+                            errorStyle:
+                                TextStyle(color: CustomColors.custom_pink),
+                            enabledBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 1, color: CustomColors.fontColor),
+                            ),
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 1, color: CustomColors.fontColor),
+                            ),
+                            labelStyle: TextStyle(
+                                fontSize: 16, color: CustomColors.fontColor),
+                            errorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: CustomColors.custom_pink)),
+                            focusedErrorBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: CustomColors.custom_pink)),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -96,7 +203,7 @@ class _SignUpSecondState extends State<SignUpSecond> {
                           style: TextStyle(color: CustomColors.custom_pink)),
                     ),
                   ),
-                  SizedBox(height: getHeight(context) / 18),
+                  SizedBox(height: getHeight(context) / (gapDividerBottom + 2)),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                         fixedSize: Size(
@@ -106,11 +213,23 @@ class _SignUpSecondState extends State<SignUpSecond> {
                         shape: CircleBorder()),
                     onPressed: () async {
                       if (!_formKey.currentState.validate()) {
+                        setState(() {
+                          gapDividerTop = 50;
+                          gapDividerBottom = 36;
+                        });
                         return;
                       } else {
                         setState(() {
                           isLoading = true;
                         });
+
+                        if (_password1.text != _password2.text) {
+                          error = "Password is not the same";
+                          _password2.clear();
+                          _password1.clear();
+                          isLoading = false;
+                          return;
+                        }
                         dynamic isEmailAlreadyInUse =
                             await DatabaseServiceUser().checkEmail(_email.text);
                         if (isEmailAlreadyInUse == true) {
@@ -143,7 +262,7 @@ class _SignUpSecondState extends State<SignUpSecond> {
                             size: 50,
                           ),
                   ),
-                  SizedBox(height: getHeight(context) / 16),
+                  SizedBox(height: getHeight(context) / gapDividerBottom),
                   Visibility(
                     visible: MediaQuery.of(context).viewInsets.bottom == 0,
                     child: DotsIndicator(

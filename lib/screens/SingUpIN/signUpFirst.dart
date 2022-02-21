@@ -18,6 +18,7 @@ class SignUpFirst extends StatefulWidget {
 }
 
 class _SignUpFirstState extends State<SignUpFirst> {
+  double gapDivider = 8;
   final _birthdaySingUp2 = TextEditingController();
   final _nickname = TextEditingController();
   bool isLoading = false;
@@ -107,7 +108,7 @@ class _SignUpFirstState extends State<SignUpFirst> {
                             errorBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: CustomColors.custom_pink)),
-                            focusedErrorBorder: OutlineInputBorder(
+                            focusedErrorBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                     width: 1, color: CustomColors.custom_pink)),
                           ),
@@ -159,7 +160,7 @@ class _SignUpFirstState extends State<SignUpFirst> {
                       ),
                     ),
                   ),
-                  SizedBox(height: getHeight(context) / 8),
+                  SizedBox(height: getHeight(context) / gapDivider),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
                           fixedSize: Size(
@@ -169,6 +170,9 @@ class _SignUpFirstState extends State<SignUpFirst> {
                           shape: CircleBorder()),
                       onPressed: () {
                         if (!_formKey.currentState.validate()) {
+                          setState(() {
+                            gapDivider = 10;
+                          });
                           return;
                         } else {
                           Navigator.of(context).push(MaterialPageRoute(
@@ -185,7 +189,7 @@ class _SignUpFirstState extends State<SignUpFirst> {
                         Icons.arrow_forward,
                         size: 50,
                       )),
-                  SizedBox(height: getHeight(context) / 7.5),
+                  SizedBox(height: getHeight(context) / gapDivider),
                   Visibility(
                     visible: MediaQuery.of(context).viewInsets.bottom == 0,
                     child: DotsIndicator(
