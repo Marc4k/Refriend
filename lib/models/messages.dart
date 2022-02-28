@@ -4,5 +4,6 @@ class Message {
   final String text;
   final bool isSender;
   final Timestamp createdAt;
-  Message({this.text, this.isSender, this.createdAt});
+  final bool isNotAMessage;
+  Message({this.text, this.isSender, this.createdAt, this.isNotAMessage});
 }

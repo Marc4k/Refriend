@@ -41,31 +41,43 @@ class _ChatScreenState extends State<ChatScreen> {
                   controller: _controller,
                   itemCount: message.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: ChatBubble(
-                          elevation: 0,
-                          clipper: ChatBubbleClipper5(
-                            type: message[index].isSender
-                                ? BubbleType.sendBubble
-                                : BubbleType.receiverBubble,
-                          ),
-                          backGroundColor: message[index].isSender
-                              ? Colors.white
-                              : Colors.green,
-                          alignment: message[index].isSender
-                              ? Alignment.centerRight
-                              : Alignment.centerLeft,
-                          child: Column(
-                            children: [
-                              Text(
-                                message[index].text,
-                                style: TextStyle(fontSize: 18),
-                              ),
-                              Text(message[index].createdAt.toDate().toString())
-                            ],
-                          )),
-                    );
+                    if (message[index].isNotAMessage == true) {
+                      return Container(
+                          color: Colors.red,
+                          child: Text(ChatService().formateDateToDateOnly(
+                              message[index].createdAt)));
+                    } else {
+                      return Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: ChatBubble(
+                            elevation: 0,
+                            clipper: ChatBubbleClipper5(
+                              type: message[index].isSender
+                                  ? BubbleType.sendBubble
+                                  : BubbleType.receiverBubble,
+                            ),
+                            backGroundColor: message[index].isSender
+                                ? Colors.white
+                                : Colors.green,
+                            alignment: message[index].isSender
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            child: Column(
+                              children: [
+                                Text(
+                                  message[index].text,
+                                  style: TextStyle(fontSize: 18),
+                                ),
+                                Text(message[index]
+                                    .createdAt
+                                    .toDate()
+                                    .toString()),
+                                Text(ChatService().formateDateToTimeOnly(
+                                    message[index].createdAt)),
+                              ],
+                            )),
+                      );
+                    }
                   },
                 );
               }

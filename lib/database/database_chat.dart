@@ -44,6 +44,8 @@ class DatabaseChat {
         return null;
       }
       messagesChat.sort((a, b) => a.createdAt.compareTo(b.createdAt));
+      messagesChat.insert(0,
+          Message(createdAt: messagesChat[0].createdAt, isNotAMessage: true));
       return messagesChat;
     } catch (error) {
       return messagesChat;
