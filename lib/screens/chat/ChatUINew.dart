@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_chat_bubble/bubble_type.dart';
-import 'package:flutter_chat_bubble/chat_bubble.dart';
-import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
 import 'package:refriend/cubit/chatMessage_cubit.dart';
@@ -24,6 +22,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _controller = ScrollController();
   final _message = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -42,40 +41,22 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: message.length,
                   itemBuilder: (context, index) {
                     if (message[index].isNotAMessage == true) {
-                      return Container(
-                          color: Colors.red,
-                          child: Text(ChatService().formateDateToDateOnly(
-                              message[index].createdAt)));
+                      return Center(
+                        child: Text(
+                          ChatService()
+                              .formateDateToDateOnly(message[index].createdAt),
+                          style: TextStyle(fontSize: 15, color: Colors.white38),
+                        ),
+                      );
                     } else {
                       return Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: ChatBubble(
-                            elevation: 0,
-                            clipper: ChatBubbleClipper5(
-                              type: message[index].isSender
-                                  ? BubbleType.sendBubble
-                                  : BubbleType.receiverBubble,
-                            ),
-                            backGroundColor: message[index].isSender
-                                ? Colors.white
-                                : Colors.green,
-                            alignment: message[index].isSender
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: Column(
-                              children: [
-                                Text(
-                                  message[index].text,
-                                  style: TextStyle(fontSize: 18),
-                                ),
-                                Text(message[index]
-                                    .createdAt
-                                    .toDate()
-                                    .toString()),
-                                Text(ChatService().formateDateToTimeOnly(
-                                    message[index].createdAt)),
-                              ],
-                            )),
+                        padding: EdgeInsets.all(getwidth(context) / 90),
+                        child: chatBubbleCustom(
+                            message[index].name,
+                            message[index].text,
+                            message[index].isSender,
+                            message[index].createdAt,
+                            context),
                       );
                     }
                   },
@@ -85,35 +66,40 @@ class _ChatScreenState extends State<ChatScreen> {
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Color(0xFF103e94),
-                    ),
-                    height: getHeight(context) / 18,
-                    width: getwidth(context) / 1.26,
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(
+                  Expanded(
+                      child: TextFormField(
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    controller: _message,
+                    minLines: 1,
+                    cursorColor: Colors.white,
+                    maxLines: 5,
+                    maxLength: 255,
+                    decoration: InputDecoration(
+                      counterStyle: TextStyle(color: CustomColors.fontColor),
+                      counterText: "",
+                      fillColor: Colors.transparent,
+
+                      contentPadding: EdgeInsets.fromLTRB(
                           getwidth(context) / 25, 0, getwidth(context) / 25, 0),
-                      child: Expanded(
-                          child: TextFormField(
-                        controller: _message,
-                        maxLines: 50,
-                        decoration: InputDecoration(
-                          counterStyle:
-                              TextStyle(color: CustomColors.fontColor),
-                          fillColor: Colors.transparent,
-                          hintText: "Message",
-                          hintStyle:
-                              TextStyle(fontSize: 12, color: Colors.white),
-                          filled: true,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                        ),
-                      )),
+                      hintText: "Message",
+
+                      hintStyle: TextStyle(fontSize: 16, color: Colors.white),
+                      filled: true,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide: BorderSide(width: 1, color: Colors.white),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide: BorderSide(width: 1, color: Colors.white),
+                      ),
+                      // enabledBorder: InputBorder.none,
+                      //focusedBorder: InputBorder.none,
                     ),
-                  ),
+                  )),
                   SizedBox(width: getwidth(context) / 40),
                   CircleAvatar(
                     backgroundColor: CustomColors.custom_pink,
@@ -126,8 +112,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
                             context.read<ChatMessageCubit>().getMessages();
 
-                            //_controller
-                            //   .jumpTo(_controller.position.maxScrollExtent);
+                            if (_controller.hasClients) {
+                              _controller
+                                  .jumpTo(_controller.position.maxScrollExtent);
+                            }
                           }
                         },
                         icon: Icon(
@@ -148,8 +136,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   } else {
                     context.read<ChatMessageCubit>().getMessages();
 
-                    if (_controller.hasClients)
+                    if (_controller.hasClients) {
                       _controller.jumpTo(_controller.position.maxScrollExtent);
+                    }
                     return Container();
                   }
                 }),

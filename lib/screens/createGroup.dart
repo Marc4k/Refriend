@@ -1,11 +1,10 @@
 import 'dart:io';
-
+import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
@@ -38,11 +37,10 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-      final croppedImage = await ImageCropper.cropImage(
-          sourcePath: image.path,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square,
-          ]);
+      final croppedImage = await ImageCropper()
+          .cropImage(sourcePath: image.path, aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ]);
 
       if (croppedImage == null) return;
 

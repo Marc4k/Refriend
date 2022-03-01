@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:refriend/database/database_chat.dart';
+import 'package:refriend/database/database_user.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_util.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +30,9 @@ class ChatService {
       }
     }
     String userID = _auth.currentUser.uid;
-    await DatabaseChat().sendMessage(message, groupCode, eventID, userID);
+
+    await DatabaseChat()
+        .sendMessage(message, groupCode, eventID, userID);
     return;
   }
 

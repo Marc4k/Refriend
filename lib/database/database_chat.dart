@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:refriend/database/database_group.dart';
-import 'package:refriend/models/groupEvents.dart';
 import 'package:refriend/models/messages.dart';
+import 'package:refriend/services/user_service.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uuid/uuid_util.dart';
 
@@ -33,6 +33,7 @@ class DatabaseChat {
 
             messagesChat.add(
               Message(
+                  name: data["Name"],
                   text: data["Message"],
                   isSender: isSender,
                   createdAt: data["CreatedAt"]),
@@ -46,14 +47,47 @@ class DatabaseChat {
       messagesChat.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       messagesChat.insert(0,
           Message(createdAt: messagesChat[0].createdAt, isNotAMessage: true));
+      print("--------------------------");
+      // int messageChatLength = messagesChat.length;
+      for (int i = 0; i <= messagesChat.length; i++) {
+        if (messagesChat[i].isNotAMessage != true) {
+          DateTime dateFirst = DateTime.fromMicrosecondsSinceEpoch(
+              messagesChat[i].createdAt.microsecondsSinceEpoch);
+
+          DateTime dateSecond = DateTime.fromMicrosecondsSinceEpoch(
+              messagesChat[i + 1].createdAt.microsecondsSinceEpoch);
+
+          DateTime onlyDateFirst =
+              DateTime(dateFirst.year, dateFirst.month, dateFirst.day);
+          DateTime onlyDateSecond =
+              DateTime(dateSecond.year, dateSecond.month, dateSecond.day);
+
+          int test = dateFirst.difference(dateSecond).inDays;
+          if (onlyDateFirst.difference(onlyDateSecond).inDays != 0) {
+            if (messagesChat[i + 1].isNotAMessage != true) {
+              messagesChat.insert(
+                  i + 1,
+                  Message(
+                      createdAt: messagesChat[i + 1].createdAt,
+                      isNotAMessage: true));
+            }
+          }
+        }
+      }
+      print("--------------------------");
+
       return messagesChat;
     } catch (error) {
       return messagesChat;
     }
   }
 
-  Future sendMessage(String message, String groupCode, String chatId,
-      String senderUserID) async {
+  Future sendMessage(
+    String message,
+    String groupCode,
+    String chatId,
+    String senderUserID,
+  ) async {
     final CollectionReference groupsChat =
         FirebaseFirestore.instance.collection('chats/$chatId/message');
 
@@ -80,9 +114,12 @@ class DatabaseChat {
     DateTime dateOfCreation = new DateTime(
         now.year, now.month, now.day, now.hour, now.minute, now.second);
 
+    dynamic username = await UserService().logedInUserInfo(1);
+
     return await groupsChat.doc("$chatIdString").set({
       "Message": message,
       "SenderID": senderUserID,
+      "Name": username,
       "CreatedAt": dateOfCreation,
       "ChatID": chatId,
       "GroupID": groupCode

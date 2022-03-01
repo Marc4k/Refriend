@@ -38,11 +38,12 @@ class _SignUpThirdState extends State<SignUpThird> {
   bool error = false;
   bool isLoading = false;
   //Pick your profil picture
+
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-      final croppedImage = await ImageCropper.cropImage(
+      final croppedImage = await ImageCropper().cropImage(
           sourcePath: image.path,
           aspectRatioPresets: [
             CropAspectRatioPreset.square,

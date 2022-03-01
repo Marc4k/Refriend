@@ -155,7 +155,7 @@ class DatabaseServiceGroup {
     }
   }
 
-  //get the group codes of the group you are a member
+  //get the group data of the group you are in
   Future getYourGroupCodes(String userID) async {
     List yourGroups = [];
     int length;
@@ -187,11 +187,13 @@ class DatabaseServiceGroup {
           for (int i = 0; i < yourGroups.length; i++) {
             if (data["GroupCode"] == yourGroups[i]) {
               groupModels.add(Group(
-                  description: data["Description"],
-                  groupCode: data["GroupCode"],
-                  inviteCode: data["InviteCode"],
-                  groupImg: data["GroupImg"],
-                  name: data["GroupName"]));
+                description: data["Description"],
+                groupCode: data["GroupCode"],
+                inviteCode: data["InviteCode"],
+                groupImg: data["GroupImg"],
+                name: data["GroupName"],
+                // newMessages: data["newMessage"]
+              ));
             }
           }
         });

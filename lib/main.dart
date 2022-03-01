@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:refriend/models/user.dart';
+import 'package:refriend/screens/createEvent.dart';
 import 'package:refriend/screens/createGroup.dart';
 import 'package:refriend/screens/group_chat/group_bigView.dart';
 import 'package:refriend/screens/SingUpIN/signIn.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
           "/groupEventBig": (context) => GroupEventBigView(),
           "/homescreen": (context) => Homescreen(),
           "/settings": (context) => Settings(),
-
+          "/createEvent": (context) => CreateEvent(),
         },
       ),
     );

@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:refriend/constant/colors.dart';
 
-Widget usernameTextfield(String label, TextEditingController controller) {
+Widget usernameTextfield(
+    String label, TextEditingController controller, String errorText) {
   return TextFormField(
     validator: (value) {
-      if (value.isNotEmpty && value.length > 2) {
+      if (value.isNotEmpty) {
         return null;
-      } else if (value.length < 3 && value.isNotEmpty) {
-        return "Your username can't be that short";
       } else {
-        return "Please enter your username";
+        return errorText;
       }
     },
     controller: controller,
@@ -20,19 +19,19 @@ Widget usernameTextfield(String label, TextEditingController controller) {
       labelText: '$label',
       errorStyle: TextStyle(color: CustomColors.custom_pink),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(11)),
+        borderRadius: BorderRadius.all(Radius.circular(17)),
         borderSide: BorderSide(width: 1, color: CustomColors.fontColor),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(11)),
+        borderRadius: BorderRadius.all(Radius.circular(17)),
         borderSide: BorderSide(width: 1, color: CustomColors.fontColor),
       ),
       labelStyle: TextStyle(fontSize: 16, color: CustomColors.fontColor),
       errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(11)),
+          borderRadius: BorderRadius.all(Radius.circular(17)),
           borderSide: BorderSide(width: 1, color: CustomColors.custom_pink)),
       focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(11)),
+          borderRadius: BorderRadius.all(Radius.circular(17)),
           borderSide: BorderSide(width: 1, color: CustomColors.custom_pink)),
     ),
   );
@@ -194,13 +193,6 @@ Widget customTextfieldWithMaxLenght(
 Widget customTextfield(
     String label, TextEditingController controller, int maxLine, int minLine) {
   return TextFormField(
-    validator: (value) {
-      if (value.isNotEmpty) {
-        return null;
-      } else {
-        return "Your message can't be empty";
-      }
-    },
     controller: controller,
     style: TextStyle(color: CustomColors.fontColor),
     cursorColor: CustomColors.fontColor,

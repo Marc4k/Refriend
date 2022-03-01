@@ -1,8 +1,14 @@
+import 'package:badges/badges.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_bubble/bubble_type.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
+import 'package:flutter_chat_bubble/clippers/chat_bubble_clipper_5.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
+import 'package:refriend/services/chat_service.dart';
 import 'package:refriend/widgets/ClipShadowPath.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:barcode_widget/barcode_widget.dart';
@@ -125,8 +131,8 @@ Widget customWaveWithDots(BuildContext context) {
   );
 }
 
-Widget listViewItemForMainScreen(
-    BuildContext context, String groupname, String imageURL) {
+Widget listViewItemForMainScreen(BuildContext context, String groupname,
+    String imageURL, int newMessages, bool showBadge) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(24, 15, 24, 15),
     child: Container(
@@ -135,38 +141,43 @@ Widget listViewItemForMainScreen(
           Stack(
             alignment: Alignment.centerLeft,
             children: [
-              Row(
-                children: [
-                  SizedBox(width: getwidth(context) / 7),
-                  Container(
-                    decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            spreadRadius: 1,
-                            blurRadius: 5,
-                            offset: Offset(3, 3), // changes position of shadow
-                          ),
-                        ],
-                        color: CustomColors.backgroundColor2,
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(5000),
-                          topRight: Radius.circular(5000),
-                        )),
-                    padding: EdgeInsets.fromLTRB(
-                        getwidth(context) / 6,
-                        getwidth(context) / 40,
-                        getwidth(context) / 6,
-                        getwidth(context) / 40),
-                    child: Text(
-                      groupname,
-                      style: GoogleFonts.roboto(
-                        fontSize: 20,
-                        color: CustomColors.fontColor,
+              Badge(
+                badgeContent: Text(newMessages.toString()),
+                showBadge: showBadge,
+                child: Row(
+                  children: [
+                    SizedBox(width: getwidth(context) / 7),
+                    Container(
+                      decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset:
+                                  Offset(3, 3), // changes position of shadow
+                            ),
+                          ],
+                          color: CustomColors.backgroundColor2,
+                          borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(5000),
+                            topRight: Radius.circular(5000),
+                          )),
+                      padding: EdgeInsets.fromLTRB(
+                          getwidth(context) / 6,
+                          getwidth(context) / 40,
+                          getwidth(context) / 6,
+                          getwidth(context) / 40),
+                      child: Text(
+                        groupname,
+                        style: GoogleFonts.roboto(
+                          fontSize: 20,
+                          color: CustomColors.fontColor,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Container(
                 decoration: BoxDecoration(
@@ -370,4 +381,80 @@ Widget eventcard(
       ),
     ),
   );
+}
+
+Widget chatBubbleCustom(String name, String message, bool isSender,
+    Timestamp createdAt, BuildContext context) {
+  if (isSender == true) {
+    return Row(
+      children: [
+        SizedBox(width: getwidth(context) / 4),
+        Expanded(
+          child: ChatBubble(
+              elevation: 0,
+              clipper: ChatBubbleClipper5(
+                type: isSender
+                    ? BubbleType.sendBubble
+                    : BubbleType.receiverBubble,
+              ),
+              backGroundColor: Colors.white,
+              alignment: Alignment.centerRight,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    message,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Text(
+                    ChatService().formateDateToTimeOnly(createdAt),
+                    style: TextStyle(fontSize: 10),
+                  ),
+                ],
+              )),
+        ),
+      ],
+    );
+  } else {
+    return Row(
+      children: [
+        Expanded(
+          child: ChatBubble(
+              elevation: 0,
+              clipper: ChatBubbleClipper5(
+                type: isSender
+                    ? BubbleType.sendBubble
+                    : BubbleType.receiverBubble,
+              ),
+              backGroundColor: Colors.black26,
+              alignment: Alignment.centerLeft,
+              child: Column(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: TextStyle(color: CustomColors.custom_pink),
+                      ),
+                      Text(
+                        message,
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ],
+                  ),
+
+                  Text(
+                    ChatService().formateDateToTimeOnly(createdAt),
+                    style: TextStyle(fontSize: 10, color: Colors.white),
+                  )
+
+                  //  Text(message[index].name)
+                ],
+              )),
+        ),
+        SizedBox(width: getwidth(context) / 4),
+      ],
+    );
+  }
 }

@@ -7,10 +7,13 @@ import 'package:refriend/cubit/groupMembers_cubit.dart';
 import 'package:refriend/database/database_group.dart';
 import 'package:refriend/models/groupMembers.dart';
 import 'package:refriend/services/group_service.dart';
+import 'package:refriend/widgets/refriendCustomWidgets.dart';
 import 'package:share/share.dart';
 
 class GroupEventBigView extends StatefulWidget {
-  const GroupEventBigView({Key key}) : super(key: key);
+  String groupName;
+  String inviteCode;
+  GroupEventBigView({this.groupName, this.inviteCode});
 
   @override
   _GroupEventBigViewState createState() => _GroupEventBigViewState();
@@ -22,14 +25,30 @@ class _GroupEventBigViewState extends State<GroupEventBigView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: CustomColors.backgroundColor,
-      ),
-      backgroundColor: CustomColors.backgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
+      backgroundColor: CustomColors.backgroundColor2,
+      body: SafeArea(
         child: Column(
           children: [
+            customWaveWithCustomText(context, widget.groupName),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  widget.inviteCode,
+                  style: GoogleFonts.righteous(
+                      color: CustomColors.fontColor,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w400),
+                ),
+                IconButton(
+                    onPressed: () => Share.share(
+                        'Join my group on Refriend. Code: ${widget.inviteCode}'),
+                    icon: Icon(
+                      Icons.share,
+                      color: Colors.white,
+                    ))
+              ],
+            ),
             Text(
               "Members",
               style: GoogleFonts.publicSans(
@@ -79,11 +98,6 @@ class _GroupEventBigViewState extends State<GroupEventBigView> {
                 }
               },
             ),
-            ElevatedButton(
-                onPressed: () {
-                  Share.share('check out my website https://http://test.at/');
-                },
-                child: Text("Share invite link"))
           ],
         ),
       ),

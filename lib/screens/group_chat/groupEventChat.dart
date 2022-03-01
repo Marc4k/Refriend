@@ -13,6 +13,7 @@ import 'package:refriend/cubit/groupMembers_cubit.dart';
 import 'package:refriend/models/groupEvents.dart';
 import 'package:refriend/models/groupMembers.dart';
 import 'package:refriend/screens/chat/ChatUINew.dart';
+import 'package:refriend/screens/createEvent.dart';
 import 'package:refriend/screens/group_chat/group_bigView.dart';
 import 'package:refriend/services/group_service.dart';
 import 'package:refriend/widgets/avatar.dart';
@@ -22,8 +23,12 @@ class GroupEventChat extends StatefulWidget {
   final String groupChatName;
   final String groupcode;
   final String groupPictureUrl;
+  final String inviteCode;
   const GroupEventChat(
-      {this.groupChatName, this.groupcode, this.groupPictureUrl});
+      {this.groupChatName,
+      this.groupcode,
+      this.groupPictureUrl,
+      this.inviteCode});
 
   @override
   _GroupEventChatState createState() => _GroupEventChatState();
@@ -33,8 +38,17 @@ class _GroupEventChatState extends State<GroupEventChat> {
 //Services
   GroupService _groupService = GroupService();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   final _what = TextEditingController();
   final _where = TextEditingController();
+
+  bool thumsUpDownShow = true;
+
   DateTime selectedDate = DateTime.now();
   @override
   Widget build(BuildContext context) {
@@ -58,19 +72,22 @@ class _GroupEventChatState extends State<GroupEventChat> {
                         ))),
                 GestureDetector(
                   onTap: () {
-                    MaterialPageRoute(
+                    Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider<GroupMembersCubit>(
+                                providers: [
+                                  BlocProvider<GroupMembersCubit>(
                                     create: (BuildContext context) =>
                                         GroupMembersCubit(widget.groupcode)
-                                          ..getMembersData())
-                              ],
-                              child: GroupEventBigView(),
-                            ));
+                                          ..getMembersData(),
+                                  ),
+                                ],
+                                child: GroupEventBigView(
+                                  inviteCode: widget.inviteCode,
+                                  groupName: widget.groupChatName,
+                                ))));
                   },
-                  child: listViewItemForMainScreen(
-                      context, widget.groupChatName, widget.groupPictureUrl),
+                  child: listViewItemForMainScreen(context,
+                      widget.groupChatName, widget.groupPictureUrl, 0, false),
                 ),
                 Spacer(),
               ],
@@ -78,90 +95,7 @@ class _GroupEventChatState extends State<GroupEventChat> {
             BlocBuilder<GroupEventCubit, List<GroupEvent>>(
               builder: (context, events) {
                 if (events.isEmpty) {
-                  return ElevatedButton(
-                      onPressed: () async {
-                        await showModalBottomSheet(
-                            isScrollControlled: true,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(20),
-                                  topLeft: Radius.circular(20)),
-                            ),
-                            backgroundColor: CustomColors.backgroundColor2,
-                            context: context,
-                            builder: (context) {
-                              return Container(
-                                height: getHeight(context) / 2,
-                                child: Column(
-                                  children: [
-                                    Text("Create a new event"),
-                                    Padding(
-                                      padding: const EdgeInsets.all(24.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "What?",
-                                            style: GoogleFonts.roboto(
-                                                color: CustomColors.fontColor,
-                                                fontSize: 20),
-                                          ),
-                                          emailField("What?", _what),
-                                          SizedBox(
-                                              height: getHeight(context) / 15),
-                                          Text(
-                                            "Where?",
-                                            style: GoogleFonts.roboto(
-                                                color: CustomColors.fontColor,
-                                                fontSize: 20),
-                                          ),
-                                          emailField("Where?", _where),
-                                          ElevatedButton(
-                                              onPressed: () async {
-                                                final DateTime picked =
-                                                    await showDatePicker(
-                                                  context: context,
-                                                  initialDate:
-                                                      selectedDate, // Refer step 1
-                                                  firstDate: DateTime(2000),
-                                                  lastDate: DateTime(2025),
-                                                );
-                                              },
-                                              child: Text("Pick Date")),
-                                        ],
-                                      ),
-                                    ),
-                                    ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            fixedSize: Size(80, 80),
-                                            primary: CustomColors.custom_pink,
-                                            elevation: 5,
-                                            shape: CircleBorder()),
-                                        onPressed: () async {
-                                          await _groupService.uploadGroupEvent(
-                                              _what.text,
-                                              "12:35",
-                                              _where.text,
-                                              selectedDate,
-                                              "moreInformation",
-                                              widget.groupcode);
-
-                                          _what.clear();
-                                          _where.clear();
-
-                                          Navigator.pop(context);
-                                        },
-                                        child: Icon(
-                                          Icons.check,
-                                          size: 50,
-                                        )),
-                                  ],
-                                ),
-                              );
-                            });
-                      },
-                      child: Text("Add a new Event"));
+                  return Text("no events Create one");
                 } else {
                   return NotificationListener<OverscrollIndicatorNotification>(
                     onNotification:
@@ -180,149 +114,184 @@ class _GroupEventChatState extends State<GroupEventChat> {
                                 .fillBack, // Fill the back side of the card to make in the same size as the front.
                             direction: FlipDirection.HORIZONTAL, // default
                             front: Container(
-                              color: Colors.white,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(width: getwidth(context) / 100),
-                                      Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text("event.refriend")),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            8, 8, 2, 8),
-                                        child: SizedBox(
-                                          width: getwidth(context) / 10,
-                                          height: getHeight(context) / 5,
-                                          child: RotatedBox(
-                                            quarterTurns: 1,
-                                            child: BarcodeWidget(
-                                                drawText: false,
-                                                data: events[index].name,
-                                                barcode: Barcode.code128()),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(22)),
+                                color: Colors.white,
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(getwidth(context) / 50),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SizedBox(width: getwidth(context) / 50),
+                                        Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text("event.refriend")),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.all(
+                                              getwidth(context) / 50),
+                                          child: SizedBox(
+                                            width: getwidth(context) / 10,
+                                            height: getHeight(context) / 5,
+                                            child: RotatedBox(
+                                              quarterTurns: 1,
+                                              child: BarcodeWidget(
+                                                  drawText: false,
+                                                  data: events[index].name,
+                                                  barcode: Barcode.code128()),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text("Refriend present:",
-                                              style: GoogleFonts.roboto(
-                                                  fontSize: 12)),
-                                          Text(events[index].name,
-                                              style: GoogleFonts.roboto(
-                                                  fontSize: 18)),
-                                          SizedBox(
-                                              height: getHeight(context) / 50),
-                                          Text("location",
-                                              style: GoogleFonts.roboto(
-                                                  fontSize: 12)),
-                                          Text(events[index].location,
-                                              style: GoogleFonts.roboto(
-                                                  fontSize: 18)),
-                                          SizedBox(
-                                              height: getHeight(context) / 50),
-                                          Text(events[index].time,
-                                              style: GoogleFonts.roboto(
-                                                  fontSize: 18)),
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                  onPressed: () {
-                                                    _groupService
-                                                        .setEventasThumpsDown(
-                                                            events[index]
-                                                                .chatId,
-                                                            widget.groupcode);
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Text("What?",
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 15)),
+                                            Text(events[index].name,
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 22)),
+                                            SizedBox(
+                                                height:
+                                                    getHeight(context) / 100),
+                                            Text("Where?",
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 15)),
+                                            Text(events[index].location,
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 22)),
+                                            SizedBox(
+                                                height:
+                                                    getHeight(context) / 100),
+                                            Text("When?",
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 15)),
+                                            Text(events[index].time,
+                                                style: GoogleFonts.roboto(
+                                                    fontSize: 22)),
+                                          ],
+                                        ),
+                                        Spacer(),
+                                        Column(
+                                          children: [
+                                            CircleAvatar(
+                                                backgroundColor:
+                                                    CustomColors.custom_pink,
+                                                child: IconButton(
+                                                    color: Colors.white,
+                                                    onPressed: () async {
+                                                      await _groupService
+                                                          .setEventasThumpsUp(
+                                                              events[index]
+                                                                  .chatId,
+                                                              widget.groupcode);
 
-                                                    context
-                                                        .read<GroupEventCubit>()
-                                                        .getEvents();
+                                                      context
+                                                          .read<
+                                                              GroupEventCubit>()
+                                                          .getEvents();
 
-                                                    context
-                                                        .read<
-                                                            GroupMembersCubit>()
-                                                        .getMembersData();
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.thumb_down,
-                                                    color: Colors.red,
-                                                  )),
-                                              IconButton(
-                                                  onPressed: () async {
-                                                    await _groupService
-                                                        .setEventasThumpsUp(
-                                                            events[index]
-                                                                .chatId,
-                                                            widget.groupcode);
+                                                      context
+                                                          .read<
+                                                              GroupMembersCubit>()
+                                                          .getMembersData();
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.thumb_up,
+                                                    ))),
+                                            SizedBox(
+                                                height:
+                                                    getHeight(context) / 100),
+                                            CircleAvatar(
+                                                backgroundColor:
+                                                    CustomColors.custom_pink,
+                                                child: IconButton(
+                                                    color: Colors.white,
+                                                    onPressed: () async {
+                                                      await _groupService
+                                                          .setEventasThumpsDown(
+                                                              events[index]
+                                                                  .chatId,
+                                                              widget.groupcode);
 
-                                                    context
-                                                        .read<GroupEventCubit>()
-                                                        .getEvents();
+                                                      context
+                                                          .read<
+                                                              GroupEventCubit>()
+                                                          .getEvents();
 
-                                                    context
-                                                        .read<
-                                                            GroupMembersCubit>()
-                                                        .getMembersData();
-                                                  },
-                                                  icon: Icon(
-                                                    Icons.thumb_up,
-                                                    color: Colors.green,
-                                                  )),
-                                              ElevatedButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                MultiBlocProvider(
-                                                                  providers: [
-                                                                    BlocProvider<
-                                                                        ChatMessageCubit>(
-                                                                      create: (BuildContext context) => ChatMessageCubit(
+                                                      context
+                                                          .read<
+                                                              GroupMembersCubit>()
+                                                          .getMembersData();
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.thumb_down,
+                                                    ))),
+                                            SizedBox(
+                                                height:
+                                                    getHeight(context) / 100),
+                                            CircleAvatar(
+                                                backgroundColor:
+                                                    CustomColors.custom_pink,
+                                                child: IconButton(
+                                                    color: Colors.white,
+                                                    onPressed: () {
+                                                      Navigator.of(context).push(
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  MultiBlocProvider(
+                                                                    providers: [
+                                                                      BlocProvider<
+                                                                          ChatMessageCubit>(
+                                                                        create: (BuildContext context) => ChatMessageCubit(
+                                                                            widget.groupcode,
+                                                                            events[index].chatId)
+                                                                          ..getMessages(),
+                                                                      ),
+                                                                    ],
+                                                                    child:
+                                                                        ChatScreen(
+                                                                      eventName:
+                                                                          events[index]
+                                                                              .name,
+                                                                      groupcode:
                                                                           widget
                                                                               .groupcode,
-                                                                          events[index]
-                                                                              .chatId)
-                                                                        ..getMessages(),
+                                                                      chatID: events[
+                                                                              index]
+                                                                          .chatId,
                                                                     ),
-                                                                  ],
-                                                                  child:
-                                                                      ChatScreen(
-                                                                    eventName:
-                                                                        events[index]
-                                                                            .name,
-                                                                    groupcode:
-                                                                        widget
-                                                                            .groupcode,
-                                                                    chatID: events[
-                                                                            index]
-                                                                        .chatId,
-                                                                  ),
-                                                                )));
-                                                  },
-                                                  child: Text("Open Chat"))
-                                            ],
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ],
+                                                                  )));
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.chat,
+                                                    ))),
+                                          ],
+                                        ),
+                                        SizedBox(width: getwidth(context) / 50),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                             back: Container(
-                              color: Colors.white,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(22)),
+                                color: Colors.white,
+                              ),
                               child: Column(
                                 children: [
-                                  Text("With"),
                                   BlocBuilder<GroupMembersCubit,
                                       List<GroupMembers>>(
                                     builder: (context, members) {
@@ -334,7 +303,8 @@ class _GroupEventChatState extends State<GroupEventChat> {
                                       } else {
                                         return Flexible(
                                           child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: EdgeInsets.all(
+                                                getHeight(context) / 50),
                                             child: GridView.builder(
                                               physics:
                                                   NeverScrollableScrollPhysics(),
@@ -387,87 +357,17 @@ class _GroupEventChatState extends State<GroupEventChat> {
         floatingActionButton: FloatingActionButton(
           child: Icon(
             Icons.add,
-            size: 50,
+            size: 35,
           ),
           backgroundColor: CustomColors.custom_pink,
           onPressed: () async {
-            await showModalBottomSheet(
-                isScrollControlled: true,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      topLeft: Radius.circular(20)),
-                ),
-                backgroundColor: CustomColors.backgroundColor2,
-                context: context,
-                builder: (context) {
-                  return Container(
-                    height: getHeight(context) / 2,
-                    child: Column(
-                      children: [
-                        Text("Create a new event"),
-                        Padding(
-                          padding: const EdgeInsets.all(24.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "What?",
-                                style: GoogleFonts.roboto(
-                                    color: CustomColors.fontColor,
-                                    fontSize: 20),
-                              ),
-                              emailField("What?", _what),
-                              SizedBox(height: getHeight(context) / 15),
-                              Text(
-                                "Where?",
-                                style: GoogleFonts.roboto(
-                                    color: CustomColors.fontColor,
-                                    fontSize: 20),
-                              ),
-                              emailField("Where?", _where),
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    final DateTime picked =
-                                        await showDatePicker(
-                                      context: context,
-                                      initialDate: selectedDate, // Refer step 1
-                                      firstDate: DateTime(2000),
-                                      lastDate: DateTime(2025),
-                                    );
-                                  },
-                                  child: Text("Pick Date")),
-                            ],
-                          ),
-                        ),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                fixedSize: Size(80, 80),
-                                primary: CustomColors.custom_pink,
-                                elevation: 5,
-                                shape: CircleBorder()),
-                            onPressed: () async {
-                              await _groupService.uploadGroupEvent(
-                                  _what.text,
-                                  "12:35",
-                                  _where.text,
-                                  selectedDate,
-                                  "moreInformation",
-                                  widget.groupcode);
-
-                              _what.clear();
-                              _where.clear();
-
-                              Navigator.pop(context);
-                            },
-                            child: Icon(
-                              Icons.check,
-                              size: 50,
-                            )),
-                      ],
-                    ),
-                  );
-                });
+            await Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) {
+                return CreateEvent(
+                  groupCode: widget.groupcode,
+                );
+              },
+            ));
           },
         ),
       ),

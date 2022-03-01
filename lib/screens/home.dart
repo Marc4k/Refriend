@@ -17,6 +17,7 @@ import 'package:refriend/services/auth_service.dart';
 import 'package:refriend/services/group_service.dart';
 import 'package:refriend/widgets/ClipShadowPath.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
+import 'package:badges/badges.dart';
 import 'dart:math' as math;
 
 class Homescreen extends StatefulWidget {
@@ -78,6 +79,7 @@ class _HomescreenState extends State<Homescreen> {
                                         ),
                                       ],
                                       child: GroupEventChat(
+                                        inviteCode: groupData[index].inviteCode,
                                         groupChatName: groupData[index].name,
                                         groupcode: groupData[index].groupCode,
                                         groupPictureUrl:
@@ -85,8 +87,12 @@ class _HomescreenState extends State<Homescreen> {
                                       ),
                                     )));
                           },
-                          child: listViewItemForMainScreen(context,
-                              groupData[index].name, groupData[index].groupImg),
+                          child: listViewItemForMainScreen(
+                              context,
+                              groupData[index].name,
+                              groupData[index].groupImg,
+                              2,
+                              true),
                         );
                       },
                     ),
@@ -97,6 +103,9 @@ class _HomescreenState extends State<Homescreen> {
           ),
         ],
       ),
+
+//Floating Action Button
+
       floatingActionButton: ExpandableFab(
         distance: 110.0,
         children: [
