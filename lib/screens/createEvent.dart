@@ -57,6 +57,11 @@ class _CreateEventState extends State<CreateEvent> {
                       alignment: Alignment.centerLeft,
                       child: IconButton(
                         onPressed: () {
+                          _description.clear();
+                          _eventName.clear();
+                          _location.clear();
+                          showError = false;
+                          showWidget = false;
                           Navigator.pop(context);
                         },
                         icon: Icon(

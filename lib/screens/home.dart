@@ -92,7 +92,7 @@ class _HomescreenState extends State<Homescreen> {
                               groupData[index].name,
                               groupData[index].groupImg,
                               2,
-                              true),
+                              false),
                         );
                       },
                     ),
