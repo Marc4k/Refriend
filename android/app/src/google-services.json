@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "219613293311",
+    "project_id": "refriend-47548",
+    "storage_bucket": "refriend-47548.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:219613293311:android:c6bbd34844e8d891547aca",
+        "android_client_info": {
+          "package_name": "com.marcplace.refriend"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "219613293311-b3sh53jlon5oj0fkmj3r9689c418mepl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnJiwpFWVk9wuHmaesEZ8dQPNt1u92MeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "219613293311-b3sh53jlon5oj0fkmj3r9689c418mepl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

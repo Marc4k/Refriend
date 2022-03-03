@@ -1,25 +1,32 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
+import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
+import 'package:refriend/database/database_user.dart';
 import 'package:refriend/screens/SingUpIN/welcomeScreen.dart';
 import 'package:refriend/services/auth_service.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
 
 class Settings extends StatefulWidget {
-  const Settings({Key key}) : super(key: key);
+  String uid;
+
+  Settings({this.uid});
 
   @override
   _SettingsState createState() => _SettingsState();
 }
 
-AuthService _auth = AuthService();
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
 class _SettingsState extends State<Settings> {
   File _image;
@@ -99,26 +106,41 @@ class _SettingsState extends State<Settings> {
                 ),
               ],
             ),
-            GestureDetector(
-              onTap: () async {
-                pickImage();
-              },
-              child: CircleAvatar(
-                radius: getHeight(context) / 7.8,
-                backgroundColor:
-                    error ? CustomColors.custom_pink : Colors.transparent,
-                child: CircleAvatar(
-                    radius: getHeight(context) / 8,
-                    backgroundImage: _image != null
-                        ? FileImage(_image)
-                        : AssetImage('assets/img/avatar.jpg'),
-                    child: Icon(
-                      Icons.edit,
-                      color: CustomColors.fontColor,
-                      size: getwidth(context) / 8,
-                    )),
-              ),
-            ),
+            BlocBuilder<ProfilPicture, String>(
+                builder: (context, profilPictureData) {
+              if (profilPictureData.isEmpty) {
+                return SpinKitChasingDots(
+                  color: Colors.white,
+                  size: 35,
+                );
+              } else {
+                return GestureDetector(
+                  onTap: () async {
+                    await pickImage();
+
+                    final User user = _auth.currentUser;
+                    final uid = user.uid;
+                    await DatabaseServiceUser(uid: uid)
+                        .uploadImageProfile(_image);
+                  },
+                  child: CircleAvatar(
+                    radius: getHeight(context) / 7.8,
+                    backgroundColor:
+                        error ? CustomColors.custom_pink : Colors.transparent,
+                    child: CircleAvatar(
+                        radius: getHeight(context) / 8,
+                        backgroundImage: _image != null
+                            ? FileImage(_image)
+                            : NetworkImage(profilPictureData),
+                        child: Icon(
+                          Icons.edit,
+                          color: CustomColors.fontColor,
+                          size: getwidth(context) / 8,
+                        )),
+                  ),
+                );
+              }
+            }),
             ElevatedButton(
                 onPressed: () async {
                   await _auth.signOut();

@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:refriend/models/group.dart';
 import 'package:refriend/models/groupMembers.dart';
 import 'package:refriend/services/group_service.dart';
 

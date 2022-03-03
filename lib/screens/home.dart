@@ -13,6 +13,7 @@ import 'package:refriend/cubit/groupMembers_cubit.dart';
 import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
 import 'package:refriend/models/group.dart';
 import 'package:refriend/screens/group_chat/groupEventChat.dart';
+import 'package:refriend/screens/settings.dart';
 import 'package:refriend/services/auth_service.dart';
 import 'package:refriend/services/group_service.dart';
 import 'package:refriend/widgets/ClipShadowPath.dart';
@@ -229,7 +230,15 @@ class _HomescreenState extends State<Homescreen> {
           ),
           ActionButton(
             onPressed: () {
-              Navigator.pushNamed(context, "/settings");
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider<ProfilPicture>(
+                              create: (BuildContext context) =>
+                                  ProfilPicture("")..getProfilPicture()),
+                        ],
+                        child: Settings(),
+                      )));
             },
             icon: const Icon(Icons.settings),
           ),
