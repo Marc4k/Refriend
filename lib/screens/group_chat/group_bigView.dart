@@ -3,9 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:refriend/constant/colors.dart';
+import 'package:refriend/constant/size.dart';
+import 'package:refriend/cubit/groupEvent_cubit.dart';
+import 'package:refriend/cubit/groupList_cubit.dart';
 import 'package:refriend/cubit/groupMembers_cubit.dart';
+import 'package:refriend/cubit/homeLoading_cubit.dart';
 import 'package:refriend/database/database_group.dart';
 import 'package:refriend/models/groupMembers.dart';
+import 'package:refriend/screens/group_chat/groupEventChat.dart';
+import 'package:refriend/screens/home.dart';
 import 'package:refriend/services/group_service.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
 import 'package:share/share.dart';
@@ -13,7 +19,8 @@ import 'package:share/share.dart';
 class GroupEventBigView extends StatefulWidget {
   String groupName;
   String inviteCode;
-  GroupEventBigView({this.groupName, this.inviteCode});
+  String groupCode;
+  GroupEventBigView({this.groupName, this.inviteCode, this.groupCode});
 
   @override
   _GroupEventBigViewState createState() => _GroupEventBigViewState();
@@ -98,6 +105,23 @@ class _GroupEventBigViewState extends State<GroupEventBigView> {
                 }
               },
             ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    onPrimary: Colors.white, primary: CustomColors.custom_pink),
+                onPressed: () async {
+                  await GroupService().leaveGroup(widget.groupCode);
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(providers: [
+                            BlocProvider<GroupDataCubit>(
+                              create: (BuildContext context) =>
+                                  GroupDataCubit()..getYourGroups(),
+                            ),
+                          ], child: Homescreen())));
+                },
+                child: Text("leave group")),
+            SizedBox(
+              height: getHeight(context) / 50,
+            )
           ],
         ),
       ),

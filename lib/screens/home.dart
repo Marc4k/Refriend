@@ -50,7 +50,7 @@ class _HomescreenState extends State<Homescreen> {
             child: BlocBuilder<GroupDataCubit, List<Group>>(
               builder: (context, groupData) {
                 if (groupData.isEmpty) {
-                  return Text("You are in no group create or join a group");
+                  return Container();
                 } else {
                   return NotificationListener<OverscrollIndicatorNotification>(
                     onNotification:

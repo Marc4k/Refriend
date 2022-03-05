@@ -190,8 +190,6 @@ class GroupService {
     for (int i = 0; i < userList.length; i++) {
       dynamic user = await DatabaseServiceUser().getUserInfos(userList[i]);
 
-      //dynamic profilUrl =
-      //   await UserService().getProfilPictureWithUserId(userList[i]);
       dynamic profilUrl =
           await DatabaseServiceUser().getUserProfilUrl(userList[i]);
 
@@ -215,6 +213,13 @@ class GroupService {
     final uid = user.uid;
 
     await DatabaseServiceGroup().setEventAsThumbsDown(uid, groupCode, chatId);
+  }
+
+  Future leaveGroup(String groupId) async {
+    final User user = _auth.currentUser;
+    final uid = user.uid;
+
+    await DatabaseServiceGroup().leaveGroup(uid, groupId);
   }
 }
 

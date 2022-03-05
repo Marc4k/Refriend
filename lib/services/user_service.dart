@@ -20,12 +20,19 @@ class UserService {
     }
   }
 
+  Future chanceProfilPicture(String newUrl) async {
+    final User user = _auth.currentUser;
+    final uid = user.uid;
 
+    dynamic userData = await DatabaseServiceUser(uid: uid).getUserInfos(uid);
 
+    DateTime birthday = DateTime.fromMicrosecondsSinceEpoch(
+        userData["birthday"].microsecondsSinceEpoch);
 
+    DatabaseServiceUser(uid: uid)
+        .updateUserData(userData["email"], userData["name"], birthday, newUrl);
+  }
 
-
-  //get profil Picture
 //get profil Picture
   Future getProfilPicture() async {
     final User user = _auth.currentUser;

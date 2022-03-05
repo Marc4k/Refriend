@@ -15,6 +15,7 @@ import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
 import 'package:refriend/database/database_user.dart';
 import 'package:refriend/screens/SingUpIN/welcomeScreen.dart';
 import 'package:refriend/services/auth_service.dart';
+import 'package:refriend/services/user_service.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
 
 class Settings extends StatefulWidget {
@@ -122,6 +123,10 @@ class _SettingsState extends State<Settings> {
                     final uid = user.uid;
                     await DatabaseServiceUser(uid: uid)
                         .uploadImageProfile(_image);
+
+                    dynamic url_ = await UserService().getProfilPicture();
+
+                    await UserService().chanceProfilPicture(url_);
                   },
                   child: CircleAvatar(
                     radius: getHeight(context) / 7.8,

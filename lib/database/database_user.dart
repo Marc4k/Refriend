@@ -22,14 +22,12 @@ class DatabaseServiceUser {
   //create or update a user Document
   Future updateUserData(String email, String name, DateTime birthday,
       String profilPictureUrl) async {
-    String token = await FirebaseMessaging.instance.getToken();
     return await userData.doc(uid).set({
       "name": name,
       "birthday": birthday,
       "email": email,
       "userid": uid,
       "url": profilPictureUrl,
-      "ntoken": token
     });
   }
 
@@ -65,7 +63,7 @@ class DatabaseServiceUser {
   }
 
   //return the userData
-  //Neu machen
+
   Future getUserInfos(String userID) async {
     Map userDataFromDatabse;
 

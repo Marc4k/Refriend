@@ -294,6 +294,39 @@ class DatabaseServiceGroup {
     return isSame;
   }
 
+  Future leaveGroup(String userId, String groupCode) async {
+    Map groupData;
+
+    final CollectionReference group =
+        FirebaseFirestore.instance.collection('groups/');
+
+    //get the group data
+    await group.get().then((snapshot) {
+      snapshot.docs.forEach((element) {
+        Map<String, dynamic> data = element.data();
+        if (data["GroupCode"] == groupCode) {
+          groupData = data;
+        }
+      });
+    });
+
+    List users = groupData["Members"];
+
+    for (int i = 0; i < users.length; i++) {
+      if (users[i] == userId) {
+        users.removeAt(i);
+      }
+    }
+
+    DatabaseServiceGroup().createGroup(
+        groupData["InviteCode"],
+        groupData["GroupName"],
+        groupData["Description"],
+        groupData["GroupCode"],
+        groupData["GroupImg"],
+        users);
+  }
+
   Future checkChatId(String chatId, String groupCode) async {
     final CollectionReference groups_events =
         FirebaseFirestore.instance.collection('groups_events/$groupCode/chats');

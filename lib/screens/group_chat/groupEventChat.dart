@@ -82,6 +82,7 @@ class _GroupEventChatState extends State<GroupEventChat> {
                                   ),
                                 ],
                                 child: GroupEventBigView(
+                                  groupCode: widget.groupcode,
                                   inviteCode: widget.inviteCode,
                                   groupName: widget.groupChatName,
                                 ))));
@@ -95,7 +96,7 @@ class _GroupEventChatState extends State<GroupEventChat> {
             BlocBuilder<GroupEventCubit, List<GroupEvent>>(
               builder: (context, events) {
                 if (events.isEmpty) {
-                  return Text("no events Create one");
+                  return Container();
                 } else {
                   return NotificationListener<OverscrollIndicatorNotification>(
                     onNotification:
