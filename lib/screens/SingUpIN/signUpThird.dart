@@ -12,7 +12,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:refriend/constant/size.dart';
 import 'package:refriend/cubit/groupList_cubit.dart';
-import 'package:refriend/cubit/homeLoading_cubit.dart';
+
 import 'package:refriend/screens/home.dart';
 import 'package:refriend/services/auth_service.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
@@ -43,11 +43,10 @@ class _SignUpThirdState extends State<SignUpThird> {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
 
-      final croppedImage = await ImageCropper().cropImage(
-          sourcePath: image.path,
-          aspectRatioPresets: [
-            CropAspectRatioPreset.square,
-          ]);
+      final croppedImage = await ImageCropper()
+          .cropImage(sourcePath: image.path, aspectRatioPresets: [
+        CropAspectRatioPreset.square,
+      ]);
 
       if (croppedImage == null) return;
 
@@ -141,10 +140,6 @@ class _SignUpThirdState extends State<SignUpThird> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => MultiBlocProvider(
                               providers: [
-                                BlocProvider<HomeLoading>(
-                                  create: (BuildContext context) =>
-                                      HomeLoading()..getDataComplete(),
-                                ),
                                 BlocProvider<GroupDataCubit>(
                                   create: (BuildContext context) =>
                                       GroupDataCubit()..getYourGroups(),

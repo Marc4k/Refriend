@@ -10,6 +10,7 @@ import 'package:refriend/constant/size.dart';
 import 'package:refriend/cubit/groupEvent_cubit.dart';
 import 'package:refriend/cubit/groupList_cubit.dart';
 import 'package:refriend/cubit/groupMembers_cubit.dart';
+import 'package:refriend/cubit/homeLoading_cubit.dart';
 import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
 import 'package:refriend/models/group.dart';
 import 'package:refriend/screens/group_chat/groupEventChat.dart';
@@ -19,6 +20,7 @@ import 'package:refriend/services/group_service.dart';
 import 'package:refriend/widgets/ClipShadowPath.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
 import 'package:badges/badges.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:math' as math;
 
 class Homescreen extends StatefulWidget {
@@ -189,21 +191,29 @@ class _HomescreenState extends State<Homescreen> {
                                   setState(() {
                                     isLoadingJoinGroup = true;
                                   });
+
                                   dynamic result = await _group_service
                                       .joinGroup(_inviteCodeController.text);
                                   if (result == null) {
-                                    setState(() {
-                                      error = "The Code is not valid!";
-                                      _inviteCodeController.clear();
-                                      isLoadingJoinGroup = false;
-                                    });
+                                    Fluttertoast.showToast(
+                                        msg: "The Code is not valid!",
+                                        toastLength: Toast.LENGTH_LONG,
+                                        fontSize: 16.0);
+
+                                    error = "";
+                                    _inviteCodeController.clear();
+                                    isLoadingJoinGroup = false;
                                   }
                                   if (result == true) {
                                     _inviteCodeController.clear();
-                                    setState(() {
-                                      error = "";
-                                      isLoadingJoinGroup = false;
-                                    });
+
+                                    error = "";
+                                    isLoadingJoinGroup = false;
+                                    Fluttertoast.showToast(
+                                        msg: "You joined the group!",
+                                        toastLength: Toast.LENGTH_LONG,
+                                        fontSize: 16.0);
+                                    Navigator.pop(context);
                                   }
                                 },
                                 child: isLoadingJoinGroup
@@ -236,6 +246,9 @@ class _HomescreenState extends State<Homescreen> {
                           BlocProvider<ProfilPicture>(
                               create: (BuildContext context) =>
                                   ProfilPicture("")..getProfilPicture()),
+                          BlocProvider<GetUserName>(
+                              create: (BuildContext context) =>
+                                  GetUserName()..getUserName()),
                         ],
                         child: Settings(),
                       )));

@@ -8,7 +8,6 @@ import 'package:refriend/models/user.dart';
 import 'package:refriend/screens/SingUpIN/welcomeScreen.dart';
 import 'package:refriend/screens/home.dart';
 
-
 class Wrapper extends StatelessWidget {
   const Wrapper({Key key}) : super(key: key);
 
@@ -23,9 +22,6 @@ class Wrapper extends StatelessWidget {
     } else {
       //user
       return MultiBlocProvider(providers: [
-        BlocProvider<HomeLoading>(
-          create: (BuildContext context) => HomeLoading()..getDataComplete(),
-        ),
         BlocProvider<GroupDataCubit>(
           create: (BuildContext context) => GroupDataCubit()..getYourGroups(),
         ),

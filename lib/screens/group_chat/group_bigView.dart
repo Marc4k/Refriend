@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -7,7 +8,7 @@ import 'package:refriend/constant/size.dart';
 import 'package:refriend/cubit/groupEvent_cubit.dart';
 import 'package:refriend/cubit/groupList_cubit.dart';
 import 'package:refriend/cubit/groupMembers_cubit.dart';
-import 'package:refriend/cubit/homeLoading_cubit.dart';
+
 import 'package:refriend/database/database_group.dart';
 import 'package:refriend/models/groupMembers.dart';
 import 'package:refriend/screens/group_chat/groupEventChat.dart';
@@ -110,6 +111,9 @@ class _GroupEventBigViewState extends State<GroupEventBigView> {
                     onPrimary: Colors.white, primary: CustomColors.custom_pink),
                 onPressed: () async {
                   await GroupService().leaveGroup(widget.groupCode);
+                  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+                  messaging.subscribeToTopic(widget.groupCode);
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MultiBlocProvider(providers: [
                             BlocProvider<GroupDataCubit>(

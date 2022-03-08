@@ -33,6 +33,19 @@ class UserService {
         .updateUserData(userData["email"], userData["name"], birthday, newUrl);
   }
 
+  Future chanceName(String userName) async {
+    final User user = _auth.currentUser;
+    final uid = user.uid;
+
+    dynamic userData = await DatabaseServiceUser(uid: uid).getUserInfos(uid);
+
+    DateTime birthday = DateTime.fromMicrosecondsSinceEpoch(
+        userData["birthday"].microsecondsSinceEpoch);
+
+    DatabaseServiceUser(uid: uid)
+        .updateUserData(userData["email"], userName, birthday, userData["url"]);
+  }
+
 //get profil Picture
   Future getProfilPicture() async {
     final User user = _auth.currentUser;

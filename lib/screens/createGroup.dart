@@ -196,7 +196,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                               backgroundImage: _image != null
                                   ? FileImage(_image)
                                   : AssetImage('assets/img/avatar.jpg'),
-                              backgroundColor: Colors.white,
+                              backgroundColor: Colors.transparent,
                               radius: getwidth(context) / 8.7,
                               child: Icon(
                                 Icons.edit,

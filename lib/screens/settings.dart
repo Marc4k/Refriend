@@ -11,11 +11,13 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
+import 'package:refriend/cubit/homeLoading_cubit.dart';
 import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
 import 'package:refriend/database/database_user.dart';
 import 'package:refriend/screens/SingUpIN/welcomeScreen.dart';
 import 'package:refriend/services/auth_service.dart';
 import 'package:refriend/services/user_service.dart';
+import 'package:refriend/widgets/custom_widgets.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
 
 class Settings extends StatefulWidget {
@@ -34,6 +36,8 @@ class _SettingsState extends State<Settings> {
   bool imagePicked = false;
   bool error = false;
   bool isLoading = false;
+
+  final _name = TextEditingController();
   //Pick your profil picture
 
   Future pickImage() async {
@@ -110,10 +114,14 @@ class _SettingsState extends State<Settings> {
             BlocBuilder<ProfilPicture, String>(
                 builder: (context, profilPictureData) {
               if (profilPictureData.isEmpty) {
-                return SpinKitChasingDots(
-                  color: Colors.white,
-                  size: 35,
-                );
+                return CircleAvatar(
+                    radius: getHeight(context) / 7.8,
+                    backgroundColor:
+                        error ? CustomColors.custom_pink : Colors.transparent,
+                    child: SpinKitChasingDots(
+                      color: Colors.white,
+                      size: 35,
+                    ));
               } else {
                 return GestureDetector(
                   onTap: () async {
@@ -146,7 +154,65 @@ class _SettingsState extends State<Settings> {
                 );
               }
             }),
+            BlocBuilder<GetUserName, String>(builder: (context, userName) {
+              if (userName.isEmpty) {
+                return Container();
+              } else {
+                _name.text = userName;
+
+                return Padding(
+                  padding: EdgeInsets.all(getwidth(context) / 20),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value.isNotEmpty) {
+                        return null;
+                      } else {
+                        return "Please enter a new name";
+                      }
+                    },
+                    controller: _name,
+                    style: TextStyle(color: CustomColors.fontColor),
+                    cursorColor: CustomColors.fontColor,
+                    decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            UserService().chanceName(_name.text);
+                          },
+                          icon: Icon(
+                            Icons.check,
+                            color: Colors.white,
+                          )),
+                      border: OutlineInputBorder(),
+                      labelText: 'new Name',
+                      errorStyle: TextStyle(color: CustomColors.custom_pink),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(17)),
+                        borderSide:
+                            BorderSide(width: 1, color: CustomColors.fontColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(17)),
+                        borderSide:
+                            BorderSide(width: 1, color: CustomColors.fontColor),
+                      ),
+                      labelStyle: TextStyle(
+                          fontSize: 16, color: CustomColors.fontColor),
+                      errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(17)),
+                          borderSide: BorderSide(
+                              width: 1, color: CustomColors.custom_pink)),
+                      focusedErrorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(17)),
+                          borderSide: BorderSide(
+                              width: 1, color: CustomColors.custom_pink)),
+                    ),
+                  ),
+                );
+              }
+            }),
             ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    onPrimary: Colors.white, primary: CustomColors.custom_pink),
                 onPressed: () async {
                   await _auth.signOut();
 
@@ -154,24 +220,11 @@ class _SettingsState extends State<Settings> {
                     builder: (context) => WelcomeScreen(),
                   ));
                 },
-                child: Text(
-                  "Logout",
-                )),
+                child: Text("Logout")),
           ],
         ),
       ),
     );
   }
 }
-/*
-            ElevatedButton(
-                onPressed: () async {
-                  await _auth.signOut();
-
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => WelcomeScreen(),
-                  ));
-                },
-                child: Text(
-                  "Logout",
-                )),*/
+//Please enter a new name
