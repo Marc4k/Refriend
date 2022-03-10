@@ -4,7 +4,7 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
-import 'package:refriend/screens/SingUpIN/signUpSecond.dart';
+import 'package:refriend/screens/SignUpIn/signUpSecond.dart';
 import 'package:refriend/widgets/custom_widgets.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
 import 'package:refriend/widgets/ClipShadowPath.dart';

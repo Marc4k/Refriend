@@ -14,7 +14,7 @@ import 'package:refriend/constant/size.dart';
 import 'package:refriend/cubit/homeLoading_cubit.dart';
 import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
 import 'package:refriend/database/database_user.dart';
-import 'package:refriend/screens/SingUpIN/welcomeScreen.dart';
+import 'package:refriend/screens/SignUpIn/welcomeScreen.dart';
 import 'package:refriend/services/auth_service.dart';
 import 'package:refriend/services/user_service.dart';
 import 'package:refriend/widgets/custom_widgets.dart';

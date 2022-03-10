@@ -5,7 +5,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:refriend/constant/size.dart';
 import 'package:refriend/database/database_user.dart';
-import 'package:refriend/screens/SingUpIN/signUpThird.dart';
+import 'package:refriend/screens/SignUpIn/signUpThird.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
 import 'package:simple_gradient_text/simple_gradient_text.dart';
 
