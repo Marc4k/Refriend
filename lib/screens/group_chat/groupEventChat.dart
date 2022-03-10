@@ -87,8 +87,8 @@ class _GroupEventChatState extends State<GroupEventChat> {
                                   groupName: widget.groupChatName,
                                 ))));
                   },
-                  child: listViewItemForMainScreen(context,
-                      widget.groupChatName, widget.groupPictureUrl, 0, false),
+                  child: listViewItemForMainScreen(
+                      context, widget.groupChatName, widget.groupPictureUrl),
                 ),
                 Spacer(),
               ],

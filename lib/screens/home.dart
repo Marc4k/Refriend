@@ -19,7 +19,7 @@ import 'package:refriend/services/auth_service.dart';
 import 'package:refriend/services/group_service.dart';
 import 'package:refriend/widgets/ClipShadowPath.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
-import 'package:badges/badges.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:math' as math;
 
@@ -91,11 +91,10 @@ class _HomescreenState extends State<Homescreen> {
                                     )));
                           },
                           child: listViewItemForMainScreen(
-                              context,
-                              groupData[index].name,
-                              groupData[index].groupImg,
-                              2,
-                              false),
+                            context,
+                            groupData[index].name,
+                            groupData[index].groupImg,
+                          ),
                         );
                       },
                     ),

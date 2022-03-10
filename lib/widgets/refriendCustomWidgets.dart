@@ -1,4 +1,3 @@
-import 'package:badges/badges.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_bubble/bubble_type.dart';
@@ -131,8 +130,8 @@ Widget customWaveWithDots(BuildContext context) {
   );
 }
 
-Widget listViewItemForMainScreen(BuildContext context, String groupname,
-    String imageURL, int newMessages, bool showBadge) {
+Widget listViewItemForMainScreen(
+    BuildContext context, String groupname, String imageURL) {
   return Padding(
     padding: const EdgeInsets.fromLTRB(24, 15, 24, 15),
     child: Container(
@@ -141,43 +140,38 @@ Widget listViewItemForMainScreen(BuildContext context, String groupname,
           Stack(
             alignment: Alignment.centerLeft,
             children: [
-              Badge(
-                badgeContent: Text(newMessages.toString()),
-                showBadge: showBadge,
-                child: Row(
-                  children: [
-                    SizedBox(width: getwidth(context) / 7),
-                    Container(
-                      decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset:
-                                  Offset(3, 3), // changes position of shadow
-                            ),
-                          ],
-                          color: CustomColors.backgroundColor2,
-                          borderRadius: BorderRadius.only(
-                            bottomRight: Radius.circular(5000),
-                            topRight: Radius.circular(5000),
-                          )),
-                      padding: EdgeInsets.fromLTRB(
-                          getwidth(context) / 6,
-                          getwidth(context) / 40,
-                          getwidth(context) / 6,
-                          getwidth(context) / 40),
-                      child: Text(
-                        groupname,
-                        style: GoogleFonts.roboto(
-                          fontSize: 20,
-                          color: CustomColors.fontColor,
-                        ),
+              Row(
+                children: [
+                  SizedBox(width: getwidth(context) / 7),
+                  Container(
+                    decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            spreadRadius: 1,
+                            blurRadius: 5,
+                            offset: Offset(3, 3), // changes position of shadow
+                          ),
+                        ],
+                        color: CustomColors.backgroundColor2,
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(5000),
+                          topRight: Radius.circular(5000),
+                        )),
+                    padding: EdgeInsets.fromLTRB(
+                        getwidth(context) / 6,
+                        getwidth(context) / 40,
+                        getwidth(context) / 6,
+                        getwidth(context) / 40),
+                    child: Text(
+                      groupname,
+                      style: GoogleFonts.roboto(
+                        fontSize: 20,
+                        color: CustomColors.fontColor,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               Container(
                 decoration: BoxDecoration(
