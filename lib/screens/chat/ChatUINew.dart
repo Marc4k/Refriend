@@ -40,6 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   controller: _controller,
                   itemCount: message.length,
                   itemBuilder: (context, index) {
+                    print(widget.chatID);
                     if (message[index].isNotAMessage == true) {
                       return Center(
                         child: Text(
@@ -135,7 +136,6 @@ class _ChatScreenState extends State<ChatScreen> {
                     return Container();
                   } else {
                     context.read<ChatMessageCubit>().getMessages();
-
                     if (_controller.hasClients) {
                       _controller.jumpTo(_controller.position.maxScrollExtent);
                     }

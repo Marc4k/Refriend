@@ -19,7 +19,7 @@ class ProfilPicture extends Cubit<String> {
 
   //get the Profil Picture
   void getProfilPicture() async =>
-      emit(await _dataServiceUser.getProfilPicture());
+      emit(await _dataServiceUser.getProfilPictureWithLink());
 
   @override
   void onChange(Change<String> change) {

@@ -86,32 +86,16 @@ class DatabaseServiceGroup {
 
   //join the group with a invite code
   Future joinGroup(String groupCode, String userID) async {
-    String realCode = "";
+    Map groupData;
     List member = [];
-    String desc = "";
-    String groupImg = "";
-    String groupName = "";
-    String inviteCode = "";
 
     try {
       await groups.get().then((snapshot) {
         snapshot.docs.forEach((element) {
           Map<String, dynamic> data = element.data();
           if (data["GroupCode"] == groupCode) {
-            realCode = data["GroupCode"];
-          }
-        });
-      });
-
-      await groups.get().then((snapshot) {
-        snapshot.docs.forEach((element) {
-          Map<String, dynamic> data = element.data();
-          if (data["GroupCode"] == realCode) {
             member = data["Members"];
-            desc = data["Description"];
-            groupImg = data["GroupImg"];
-            groupName = data["GroupName"];
-            inviteCode = data["InviteCode"];
+            groupData = data;
           }
         });
       });
@@ -119,11 +103,11 @@ class DatabaseServiceGroup {
       member.add(userID);
 
       return await groups.doc(groupCode).set({
-        "GroupName": groupName,
-        "Description": desc,
-        "GroupCode": realCode,
-        "GroupImg": groupImg,
-        "InviteCode": inviteCode,
+        "GroupName": groupData["GroupName"],
+        "Description": groupData["Description"],
+        "GroupCode": groupData["GroupCode"],
+        "GroupImg": groupData["GroupImg"],
+        "InviteCode": groupData["InviteCode"],
         "Members": member,
       });
     } catch (e) {
@@ -151,48 +135,28 @@ class DatabaseServiceGroup {
       }
     } catch (e) {
       print(e.toString());
-      //return null;
     }
   }
 
   //get the group data of the group you are in
-  Future getYourGroupCodes(String userID) async {
-    List yourGroups = [];
-    int length;
-
-    try {
-      await groups.get().then((snapshot) {
-        snapshot.docs.forEach((element) {
-          Map<String, dynamic> data = element.data();
-
-          length = data["Members"].length;
-          for (int i = 0; i < length; i++) {
-            if (data["Members"][i] == userID) {
-              yourGroups.add(data["GroupCode"]);
-            }
-          }
-        });
-      });
-    } catch (e) {
-      print(e.toString());
-      //return null;
-    }
+  Future getYourGroupData(String userID) async {
+    final CollectionReference groups =
+        FirebaseFirestore.instance.collection('groups');
 
     List<Group> groupModels = [];
-
     try {
       await groups.get().then((snapshot) {
         snapshot.docs.forEach((element) {
           Map<String, dynamic> data = element.data();
-          for (int i = 0; i < yourGroups.length; i++) {
-            if (data["GroupCode"] == yourGroups[i]) {
+          // length =
+          for (int i = 0; i < data["Members"].length; i++) {
+            if (data["Members"][i] == userID) {
               groupModels.add(Group(
                 description: data["Description"],
                 groupCode: data["GroupCode"],
                 inviteCode: data["InviteCode"],
                 groupImg: data["GroupImg"],
                 name: data["GroupName"],
-                // newMessages: data["newMessage"]
               ));
             }
           }
@@ -200,9 +164,7 @@ class DatabaseServiceGroup {
       });
     } catch (e) {
       print(e.toString());
-      return null;
     }
-
     return groupModels;
   }
 
@@ -350,13 +312,7 @@ class DatabaseServiceGroup {
 
   Future setEventAsThumbsUp(
       String userId, String groupCode, String chatId) async {
-    String createdFrom;
-    String eventName;
-    String time;
-    String location;
-    String moreInformation;
-    Timestamp date;
-    Timestamp created;
+    Map dataEvent;
     List thumpsUp = [];
     List thumpsDown = [];
     bool alreadyThumpsUp = false;
@@ -369,13 +325,7 @@ class DatabaseServiceGroup {
         snapshot.docs.forEach((element) {
           Map<String, dynamic> data = element.data();
           if (data["ChatID"] == chatId) {
-            created = data["CreatedAt"];
-            createdFrom = data["CreatedFrom"];
-            date = data["Date"];
-            moreInformation = data["Description"];
-            eventName = data["EventName"];
-            location = data["Location"];
-            time = data["Time"];
+            dataEvent = data;
             thumpsUp = data["ThumpsUp"];
             thumpsDown = data["ThumpsDown"];
           }
@@ -409,16 +359,16 @@ class DatabaseServiceGroup {
         .collection('groups_events/$groupCode/event_chat');
 
     return await groupsEvents2.doc("$chatId").set({
-      "EventName": eventName,
-      "Description": moreInformation,
-      "Time": time,
-      "Date": date,
-      "Location": location,
-      "ChatID": chatId,
-      "CreatedAt": created,
-      "CreatedFrom": createdFrom,
+      "EventName": dataEvent["EventName"],
+      "Description": dataEvent["Description"],
+      "Time": dataEvent["Time"],
+      "Date": dataEvent["Date"],
+      "Location": dataEvent["Location"],
+      "ChatID": dataEvent["ChatID"],
+      "CreatedAt": dataEvent["CreatedAt"],
+      "CreatedFrom": dataEvent["CreatedFrom"],
       "ThumpsUp": thumpsUp,
-      "ThumpsDown": thumpsDown,
+      "ThumpsDown": dataEvent["ThumpsDown"],
     });
   }
 
@@ -494,7 +444,7 @@ class DatabaseServiceGroup {
     });
   }
 
-  Future getGroupChatMessages(String groupCode) async {
+  Future getGroupEvents(String groupCode) async {
     List<GroupEvent> groupEvents = [];
 
     final CollectionReference groups_events = FirebaseFirestore.instance
@@ -526,6 +476,8 @@ class DatabaseServiceGroup {
   Future getGroupMembersId(String groupCode) async {
     List member = [];
 
+    final CollectionReference groups =
+        FirebaseFirestore.instance.collection('groups');
     try {
       await groups.get().then((snapshot) {
         snapshot.docs.forEach((element) {

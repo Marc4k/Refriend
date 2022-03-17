@@ -113,7 +113,7 @@ class _GroupEventBigViewState extends State<GroupEventBigView> {
                   await GroupService().leaveGroup(widget.groupCode);
                   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-                  messaging.subscribeToTopic(widget.groupCode);
+                  messaging.unsubscribeFromTopic(widget.groupCode);
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => MultiBlocProvider(providers: [
                             BlocProvider<GroupDataCubit>(

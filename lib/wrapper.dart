@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:refriend/cubit/groupList_cubit.dart';
-import 'package:refriend/cubit/homeLoading_cubit.dart';
+import 'package:refriend/cubit/userData_cubit.dart';
 import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
 import 'package:refriend/models/user.dart';
 import 'package:refriend/screens/SignUpIn/welcomeScreen.dart';

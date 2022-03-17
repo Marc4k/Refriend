@@ -62,10 +62,10 @@ class GroupService {
     dynamic groupImg =
         await DatabaseServiceGroup().uploadGroupImage(image, groupCode);
 
+    //get link to Group picture
     dynamic groupImage = await getGroupPictureFromPath(groupImg);
 
     FirebaseMessaging messaging = FirebaseMessaging.instance;
-
     messaging.subscribeToTopic(groupCode);
 
     //create group
@@ -99,7 +99,6 @@ class GroupService {
 
       messaging.subscribeToTopic(groupCode);
 
-      print("Joined the group");
       await DatabaseServiceGroup().joinGroup(groupCode, uid);
       uploaded = true;
       return uploaded;
@@ -112,7 +111,7 @@ class GroupService {
     final uid = user.uid;
 
     //get all Groups where the user joined
-    dynamic groupDataList = await DatabaseServiceGroup().getYourGroupCodes(uid);
+    dynamic groupDataList = await DatabaseServiceGroup().getYourGroupData(uid);
 
     return groupDataList;
     //return data;
@@ -159,7 +158,7 @@ class GroupService {
       var chatId;
       chatId = uuid.v4(options: {'rng': UuidUtil.cryptoRNG});
 
-      //check the groupId
+      //check the chatId
       dynamic isSameChatId =
           await DatabaseServiceGroup().checkEventChatId(chatId, groupCode);
 
@@ -176,7 +175,7 @@ class GroupService {
 
   Future getGroupEvent(String groupCode) async {
     dynamic groupEventList =
-        await DatabaseServiceGroup().getGroupChatMessages(groupCode);
+        await DatabaseServiceGroup().getGroupEvents(groupCode);
 
     return groupEventList;
   }
@@ -190,11 +189,8 @@ class GroupService {
     for (int i = 0; i < userList.length; i++) {
       dynamic user = await DatabaseServiceUser().getUserInfos(userList[i]);
 
-      dynamic profilUrl =
-          await DatabaseServiceUser().getUserProfilUrl(userList[i]);
-
       groupMembersList.add(GroupMembers(
-          name: user["name"], userId: user["userid"], imageUrl: profilUrl));
+          name: user["name"], userId: user["userid"], imageUrl: user["url"]));
     }
     if (groupMembersList.isNotEmpty) {
       return groupMembersList;

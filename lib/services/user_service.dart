@@ -6,18 +6,13 @@ class UserService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   //get all user Information
-  Future logedInUserInfo(int index) async {
+  Future logedInUserInfo() async {
     final User user = _auth.currentUser;
     final uid = user.uid;
 
     dynamic result = await DatabaseServiceUser().getUserInfos(uid);
-
-    if (index == 1) {
-      String username = result["name"];
-      return username;
-    } else if (index == 2) {
-      return result["email"];
-    }
+    String userName = result["name"];
+    return userName;
   }
 
   Future chanceProfilPicture(String newUrl) async {
@@ -46,17 +41,23 @@ class UserService {
         .updateUserData(userData["email"], userName, birthday, userData["url"]);
   }
 
+  Future getProfilPictureWithLink() async {
+    final User user = _auth.currentUser;
+    final uid = user.uid;
+
+    dynamic profilUrl = await DatabaseServiceUser().getUserProfilUrl(uid);
+
+    return profilUrl;
+  }
+
 //get profil Picture
   Future getProfilPicture() async {
     final User user = _auth.currentUser;
     final uid = user.uid;
     final ref = FirebaseStorage.instance.ref("Profil/$uid/");
     final result = await ref.listAll();
-
-    final before = DateTime.now();
     final urls = await _getDownloadLinks(result.items);
-    final difference = DateTime.now().difference(before);
-    print(difference);
+
     String stringUrl = urls[0];
     return stringUrl;
   }

@@ -3,34 +3,19 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class WeatherService {
-  Future getWeather(DateTime pickedDate, String lat, String long) async {
+  Future getWeather(int day, String lat, String long) async {
     Map weatherData;
 
-    DateTime now = DateTime.now();
+    var url = Uri.parse(
+        'https://api.openweathermap.org/data/2.5/onecall?lat=$long&lon=$lat&exclude=hourly,minutely,current,alerts&appid=a47aaeca2081c4db3b2f739e0e594ce8&units=Metric');
+    var response = await http.get(url);
 
-    DateTime pickedDateOnly =
-        DateTime(pickedDate.year, pickedDate.month, pickedDate.day);
-    DateTime nowDateOnly = DateTime(now.year, now.month, now.day);
-    var difference = pickedDateOnly.difference(nowDateOnly).inDays;
+    var json = await jsonDecode(response.body);
 
-    if (difference > 7 || difference < 0) {
-      bool error = true;
-      return error;
-    } else {
-      var url = Uri.parse(
-          'https://api.openweathermap.org/data/2.5/onecall?lat=$lat&lon=-$long&exclude=hourly,minutely,current,alerts&appid=a47aaeca2081c4db3b2f739e0e594ce8&units=Metric');
-      var response = await http.get(url);
+    var jsonResult = await json["daily"] as List;
 
-      var json = await jsonDecode(response.body);
-
-      var jsonResult = await json["daily"] as List;
-
-      //  for (int i = 0; i < jsonResult.length; i++) {
-      //    print(jsonResult[0]["1"]);
-      //  }
-      weatherData = jsonResult[difference]["temp"];
-      weatherData["weather"] = jsonResult[0]["weather"][0]["main"];
-    }
+    weatherData = jsonResult[day]["temp"];
+    weatherData["weather"] = jsonResult[0]["weather"][0]["main"];
 
     return weatherData;
   }

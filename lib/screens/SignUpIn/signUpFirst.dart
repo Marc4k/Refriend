@@ -1,14 +1,10 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
 import 'package:refriend/screens/SignUpIn/signUpSecond.dart';
-import 'package:refriend/widgets/custom_widgets.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
-import 'package:refriend/widgets/ClipShadowPath.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class SignUpFirst extends StatefulWidget {
   const SignUpFirst({Key key}) : super(key: key);

@@ -11,30 +11,20 @@ admin.initializeApp(functions.config().firebase);
 exports.sendGroupNotification = functions.firestore
     .document('groups_events/{groupID}/event_chat/{eventID}').onWrite((change, context) => {
 
-
         var request = change.after.data()
         functions.logger.log(request.GroupID);
 
-
         var topic = request.GroupID;
+
         const payload = {
             notification: {
-                title: 'New event:'+ request.EventName,
-                body: request.Description
+                title: 'New event!',
+                body: request.EventName
             }
         };
 
         admin.messaging().sendToTopic(topic, payload)
-        .then((response) => {
-            console.log("Successfully sent message: ", response);
-            return true;
-        })
-        .catch((error) => {
-            console.log("Error sending message: ", error);
-            return false;
-        })
-
-    });
+});
 
 
 
@@ -42,7 +32,6 @@ exports.sendGroupNotification = functions.firestore
 exports.sendChatNotification = functions.firestore
     .document('chats/{eventID}/message/{messageID}').onWrite((change, context) => {
 
-//        chats/${widget.chatID}/message
         var request = change.after.data()
         functions.logger.log(request.GroupID);
 
@@ -50,19 +39,10 @@ exports.sendChatNotification = functions.firestore
         var topic = request.GroupID;
         const payload = {
             notification: {
-                title: "New Message:",
+                title: request.Name,
                 body: request.Message
             }
         };
 
         admin.messaging().sendToTopic(topic, payload)
-        .then((response) => {
-            console.log("Successfully sent message: ", response);
-            return true;
-        })
-        .catch((error) => {
-            console.log("Error sending message: ", error);
-            return false;
-        })
-
-    });
+});

@@ -10,29 +10,28 @@ class ChatService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future sendMessageToDatabase(
-      String message, String groupCode, String eventID) async {
+      String message, String groupCode, String chatID) async {
     bool repeateChatId = true;
-    String chatIdString;
+    String messageIdString;
 
     while (repeateChatId == true) {
       var uuid = Uuid();
-      var chatId;
-      chatId = uuid.v4(options: {'rng': UuidUtil.cryptoRNG});
-
+      var messageID;
+      messageID = uuid.v4(options: {'rng': UuidUtil.cryptoRNG});
       dynamic isSameChatId =
-          await DatabaseChat().checkChatId(chatId, groupCode);
+          await DatabaseChat().checkChatId(messageID, groupCode);
 
       if (isSameChatId == true) {
         continue;
       } else if (isSameChatId == false) {
         repeateChatId = false;
-        chatIdString = chatId;
+        messageIdString = messageID;
       }
     }
     String userID = _auth.currentUser.uid;
 
     await DatabaseChat()
-        .sendMessage(message, groupCode, eventID, userID);
+        .sendMessage(message, groupCode, chatID, userID, messageIdString);
     return;
   }
 

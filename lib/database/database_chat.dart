@@ -30,7 +30,6 @@ class DatabaseChat {
             } else {
               isSender = false;
             }
-
             messagesChat.add(
               Message(
                   name: data["Name"],
@@ -47,7 +46,7 @@ class DatabaseChat {
       messagesChat.sort((a, b) => a.createdAt.compareTo(b.createdAt));
       messagesChat.insert(0,
           Message(createdAt: messagesChat[0].createdAt, isNotAMessage: true));
-      print("--------------------------");
+
       // int messageChatLength = messagesChat.length;
       for (int i = 0; i <= messagesChat.length; i++) {
         if (messagesChat[i].isNotAMessage != true) {
@@ -74,49 +73,24 @@ class DatabaseChat {
           }
         }
       }
-      print("--------------------------");
-
       return messagesChat;
     } catch (error) {
       return messagesChat;
     }
   }
 
-  Future sendMessage(
-    String message,
-    String groupCode,
-    String chatId,
-    String senderUserID,
-  ) async {
+  Future sendMessage(String message, String groupCode, String chatId,
+      String senderUserID, String messageID) async {
     final CollectionReference groupsChat =
         FirebaseFirestore.instance.collection('chats/$chatId/message');
-
-    bool repeateChatId = true;
-    String chatIdString;
-
-    while (repeateChatId == true) {
-      var uuid = Uuid();
-      var chatId;
-      chatId = uuid.v4(options: {'rng': UuidUtil.cryptoRNG});
-
-      dynamic isSameChatId =
-          await DatabaseServiceGroup().checkChatId(chatId, groupCode);
-
-      if (isSameChatId == true) {
-        continue;
-      } else if (isSameChatId == false) {
-        repeateChatId = false;
-        chatIdString = chatId;
-      }
-    }
 
     DateTime now = new DateTime.now();
     DateTime dateOfCreation = new DateTime(
         now.year, now.month, now.day, now.hour, now.minute, now.second);
 
-    dynamic username = await UserService().logedInUserInfo(1);
+    dynamic username = await UserService().logedInUserInfo();
 
-    return await groupsChat.doc("$chatIdString").set({
+    return await groupsChat.doc("$messageID").set({
       "Message": message,
       "SenderID": senderUserID,
       "Name": username,

@@ -7,7 +7,6 @@ import 'package:refriend/constant/size.dart';
 import 'package:refriend/database/database_user.dart';
 import 'package:refriend/screens/SignUpIn/signUpThird.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
 
 class SignUpSecond extends StatefulWidget {
   final String name;
@@ -108,9 +107,12 @@ class _SignUpSecondState extends State<SignUpSecond> {
                                   _isObscure1 = !_isObscure1;
                                 });
                               },
-                              icon: Icon(_isObscure1
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
+                              icon: Icon(
+                                _isObscure1
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.white,
+                              ),
                             ),
                             border: OutlineInputBorder(),
                             hintText: "Enter your Password",
@@ -164,9 +166,12 @@ class _SignUpSecondState extends State<SignUpSecond> {
                                   _isObscure2 = !_isObscure2;
                                 });
                               },
-                              icon: Icon(_isObscure2
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
+                              icon: Icon(
+                                _isObscure2
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.white,
+                              ),
                             ),
                             border: OutlineInputBorder(),
                             hintText: "Enter your Password again",

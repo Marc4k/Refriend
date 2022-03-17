@@ -159,6 +159,7 @@ class _GroupEventChatState extends State<GroupEventChat> {
                                                 style: GoogleFonts.roboto(
                                                     fontSize: 15)),
                                             Text(events[index].name,
+                                                overflow: TextOverflow.fade,
                                                 style: GoogleFonts.roboto(
                                                     fontSize: 22)),
                                             SizedBox(
@@ -168,6 +169,7 @@ class _GroupEventChatState extends State<GroupEventChat> {
                                                 style: GoogleFonts.roboto(
                                                     fontSize: 15)),
                                             Text(events[index].location,
+                                                overflow: TextOverflow.fade,
                                                 style: GoogleFonts.roboto(
                                                     fontSize: 22)),
                                             SizedBox(
@@ -177,6 +179,7 @@ class _GroupEventChatState extends State<GroupEventChat> {
                                                 style: GoogleFonts.roboto(
                                                     fontSize: 15)),
                                             Text(events[index].time,
+                                                overflow: TextOverflow.fade,
                                                 style: GoogleFonts.roboto(
                                                     fontSize: 22)),
                                           ],

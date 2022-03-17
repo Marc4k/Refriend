@@ -63,7 +63,6 @@ class DatabaseServiceUser {
   }
 
   //return the userData
-
   Future getUserInfos(String userID) async {
     Map userDataFromDatabse;
 

@@ -46,9 +46,10 @@ class AuthService {
           email: email, password: password);
       User user = result.user;
 
-      //upload the Profile pictures to the firestore
+      //upload the Profile picture to the firestore
       await DatabaseServiceUser(uid: user.uid).uploadImageProfile(image);
 
+      //get the url of the picutre
       dynamic url_ = await UserService().getProfilPicture();
 
       String url = url_;

@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
-import 'package:refriend/screens/home.dart';
 import 'package:refriend/services/group_service.dart';
 import 'package:refriend/services/weather_service.dart';
 import 'package:refriend/widgets/custom_widgets.dart';
@@ -29,7 +28,7 @@ final _description = TextEditingController();
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 bool isLoading = false;
 bool isLoadingWeather = false;
-double gapDivider = 4;
+double gapDivider = 7.5;
 DateTime pickedDate;
 TimeOfDay pickedTime = TimeOfDay(hour: 0, minute: 0);
 String dateFormated = "";
@@ -37,11 +36,14 @@ String dateFormatedForUpload = "";
 bool showWidget = false;
 bool showWeather = false;
 bool showError = false;
-String day = "";
-String night = "";
-String max = "";
-String min = "";
-String weather = "";
+
+Map weatherData = {
+  "max": "",
+  "min": "",
+  "day": "",
+  "night": "",
+  "weather": "",
+};
 
 class _CreateEventState extends State<CreateEvent> {
   @override
@@ -73,6 +75,8 @@ class _CreateEventState extends State<CreateEvent> {
                             showError = false;
                             showWidget = false;
                             showWeather = false;
+                            isLoading = false;
+                            isLoadingWeather = false;
                             Navigator.pop(context);
                           },
                           icon: Icon(
@@ -121,35 +125,21 @@ class _CreateEventState extends State<CreateEvent> {
                               initialTime: TimeOfDay.now(),
                               context: context, //context of current state
                             );
+
                             setState(() {
                               isLoadingWeather = true;
                             });
 
-                            LocationPermission permission =
-                                await Geolocator.checkPermission();
+                            DateTime now = DateTime.now();
 
-                            if (permission == LocationPermission.denied) {
-                              LocationPermission permission =
-                                  await Geolocator.requestPermission();
-                            }
-                            dynamic weatherData;
-                            if (permission == LocationPermission.whileInUse ||
-                                permission == LocationPermission.always) {
-                              Position position =
-                                  await Geolocator.getCurrentPosition(
-                                      desiredAccuracy: LocationAccuracy.high);
+                            DateTime pickedDateOnly = DateTime(pickedDate.year,
+                                pickedDate.month, pickedDate.day);
+                            DateTime nowDateOnly =
+                                DateTime(now.year, now.month, now.day);
+                            var difference =
+                                pickedDateOnly.difference(nowDateOnly).inDays;
 
-                              weatherData = await WeatherService().getWeather(
-                                  pickedDate,
-                                  position.longitude.toString(),
-                                  position.latitude.toString());
-                            } else {
-                              weatherData = true;
-                            }
-                            setState(() {
-                              isLoadingWeather = false;
-                            });
-                            setState(() {
+                            if (difference > 7 || difference < 0) {
                               dateFormated =
                                   DateFormat.yMMMMEEEEd().format(pickedDate);
 
@@ -158,18 +148,58 @@ class _CreateEventState extends State<CreateEvent> {
                               showWidget = true;
                               showError = false;
 
-                              if (weatherData == true) {
-                                showWeather = false;
-                                return;
-                              } else {
-                                showWeather = true;
-                                day = weatherData["day"].toString() + "°C";
-                                night = weatherData["night"].toString() + "°C";
-                                min = weatherData["min"].toString() + "°C";
-                                max = weatherData["max"].toString() + "°C";
-                                weather = weatherData["weather"];
+                              setState(() {
+                                isLoadingWeather = false;
+                                gapDivider = 7;
+                              });
+                            } else {
+                              LocationPermission permission =
+                                  await Geolocator.checkPermission();
+
+                              if (permission == LocationPermission.denied) {
+                                LocationPermission permission =
+                                    await Geolocator.requestPermission();
                               }
-                            });
+
+                              if (permission == LocationPermission.whileInUse ||
+                                  permission == LocationPermission.always) {
+                                Position position =
+                                    await Geolocator.getCurrentPosition(
+                                        desiredAccuracy: LocationAccuracy.high);
+
+                                weatherData = await WeatherService().getWeather(
+                                    difference,
+                                    position.longitude.toString(),
+                                    position.latitude.toString());
+
+                                setState(() {
+                                  dateFormated = DateFormat.yMMMMEEEEd()
+                                      .format(pickedDate);
+
+                                  dateFormatedForUpload =
+                                      DateFormat.yMd().format(pickedDate);
+                                  showWidget = true;
+                                  showError = false;
+
+                                  showWeather = true;
+                                  isLoadingWeather = false;
+                                  gapDivider = 3;
+                                });
+                              } else {
+                                dateFormated =
+                                    DateFormat.yMMMMEEEEd().format(pickedDate);
+
+                                dateFormatedForUpload =
+                                    DateFormat.yMd().format(pickedDate);
+                                showWidget = true;
+                                showError = false;
+
+                                setState(() {
+                                  isLoadingWeather = false;
+                                  gapDivider = 7;
+                                });
+                              }
+                            }
                           },
                           child: Text("pick date and time")),
                     ),
@@ -214,64 +244,102 @@ class _CreateEventState extends State<CreateEvent> {
                                                 firstDate: DateTime(
                                                     2000), //DateTime.now() - not to allow to choose before today.
                                                 lastDate: DateTime(2101));
+
                                         setState(() {
                                           isLoadingWeather = true;
+                                          showWeather = false;
+                                          showWidget = false;
                                         });
-                                        LocationPermission permission =
-                                            await Geolocator.checkPermission();
 
-                                        if (permission ==
-                                            LocationPermission.denied) {
-                                          LocationPermission permission =
-                                              await Geolocator
-                                                  .requestPermission();
-                                        }
-                                        dynamic weatherData;
-                                        if (permission ==
-                                            LocationPermission.whileInUse) {
-                                          Position position = await Geolocator
-                                              .getCurrentPosition(
-                                                  desiredAccuracy:
-                                                      LocationAccuracy.high);
+                                        DateTime now = DateTime.now();
 
-                                          weatherData = await WeatherService()
-                                              .getWeather(
-                                                  pickedDate,
-                                                  position.longitude.toString(),
-                                                  position.latitude.toString());
-                                        } else {
-                                          weatherData = true;
-                                        }
-                                        setState(() {
-                                          isLoadingWeather = false;
-                                        });
-                                        setState(() {
+                                        DateTime pickedDateOnly = DateTime(
+                                            pickedDate.year,
+                                            pickedDate.month,
+                                            pickedDate.day);
+                                        DateTime nowDateOnly = DateTime(
+                                            now.year, now.month, now.day);
+                                        var difference = pickedDateOnly
+                                            .difference(nowDateOnly)
+                                            .inDays;
+
+                                        if (difference > 7 || difference < 0) {
                                           dateFormated = DateFormat.yMMMMEEEEd()
                                               .format(pickedDate);
 
                                           dateFormatedForUpload =
                                               DateFormat.yMd()
                                                   .format(pickedDate);
+                                          showWidget = true;
+                                          showError = false;
 
-                                          if (weatherData == true) {
-                                            return;
-                                          } else {
-                                            showWeather = true;
-                                            day =
-                                                weatherData["day"].toString() +
-                                                    "°C";
-                                            night = weatherData["night"]
-                                                    .toString() +
-                                                "°C";
-                                            min =
-                                                weatherData["min"].toString() +
-                                                    "°C";
-                                            max =
-                                                weatherData["max"].toString() +
-                                                    "°C";
-                                            weather = weatherData["weather"];
+                                          setState(() {
+                                            isLoadingWeather = false;
+                                          });
+                                        } else {
+                                          LocationPermission permission =
+                                              await Geolocator
+                                                  .checkPermission();
+
+                                          if (permission ==
+                                              LocationPermission.denied) {
+                                            LocationPermission permission =
+                                                await Geolocator
+                                                    .requestPermission();
                                           }
-                                        });
+
+                                          if (permission ==
+                                                  LocationPermission
+                                                      .whileInUse ||
+                                              permission ==
+                                                  LocationPermission.always) {
+                                            Position position = await Geolocator
+                                                .getCurrentPosition(
+                                                    desiredAccuracy:
+                                                        LocationAccuracy.high);
+                                            print("Longitude" +
+                                                position.longitude.toString());
+                                            print("Latitude" +
+                                                position.latitude.toString());
+                                            weatherData = await WeatherService()
+                                                .getWeather(
+                                                    difference,
+                                                    position.longitude
+                                                        .toString(),
+                                                    position.latitude
+                                                        .toString());
+
+                                            setState(() {
+                                              dateFormated =
+                                                  DateFormat.yMMMMEEEEd()
+                                                      .format(pickedDate);
+
+                                              dateFormatedForUpload =
+                                                  DateFormat.yMd()
+                                                      .format(pickedDate);
+                                              showWidget = true;
+                                              showError = false;
+
+                                              showWeather = true;
+                                              isLoadingWeather = false;
+                                            });
+                                          } else {
+                                            dateFormated =
+                                                DateFormat.yMMMMEEEEd()
+                                                    .format(pickedDate);
+
+                                            dateFormatedForUpload =
+                                                DateFormat.yMd()
+                                                    .format(pickedDate);
+                                            showWidget = true;
+                                            showError = false;
+
+                                            setState(() {
+                                              isLoadingWeather = false;
+                                              gapDivider = 7;
+                                            });
+                                          }
+                                        }
                                       },
                                       icon: Icon(
                                         Icons.edit,
@@ -321,7 +389,7 @@ class _CreateEventState extends State<CreateEvent> {
                               child: Align(
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  weather,
+                                  weatherData["weather"],
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 20),
                                 ),
@@ -338,7 +406,7 @@ class _CreateEventState extends State<CreateEvent> {
                                     size: getwidth(context) / 18,
                                   ),
                                   Text(
-                                    day,
+                                    weatherData["day"].toString() + "°C",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
@@ -349,7 +417,7 @@ class _CreateEventState extends State<CreateEvent> {
                                     size: getwidth(context) / 18,
                                   ),
                                   Text(
-                                    max,
+                                    weatherData["max"].toString() + "°C",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
@@ -367,7 +435,7 @@ class _CreateEventState extends State<CreateEvent> {
                                     size: getwidth(context) / 18,
                                   ),
                                   Text(
-                                    night,
+                                    weatherData["night"].toString() + "°C",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
@@ -378,7 +446,7 @@ class _CreateEventState extends State<CreateEvent> {
                                     size: getwidth(context) / 18,
                                   ),
                                   Text(
-                                    min,
+                                    weatherData["min"].toString() + "°C",
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 20),
                                   ),
@@ -390,7 +458,7 @@ class _CreateEventState extends State<CreateEvent> {
                       ],
                     ),
                     SizedBox(height: gap),
-                    customTextfield("more Infos", _description, 5, 5),
+                    customTextfield("more Infos", _description, 3, 3),
                     SizedBox(height: gap * gapDivider),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(

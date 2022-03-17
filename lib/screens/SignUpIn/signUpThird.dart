@@ -126,6 +126,7 @@ class _SignUpThirdState extends State<SignUpThird> {
                       error = false;
                       isLoading = true;
                     });
+
                     dynamic result = await _auth.registerWithEmailAndPassword(
                         widget.email,
                         widget.password,

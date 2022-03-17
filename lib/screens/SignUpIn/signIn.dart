@@ -7,13 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
 import 'package:refriend/cubit/groupList_cubit.dart';
-import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
 import 'package:refriend/screens/home.dart';
 import 'package:refriend/services/auth_service.dart';
-import 'package:refriend/widgets/custom_widgets.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
-import 'package:simple_gradient_text/simple_gradient_text.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key key}) : super(key: key);
@@ -123,9 +119,12 @@ class _SignInState extends State<SignIn> {
                                   _isObscure = !_isObscure;
                                 });
                               },
-                              icon: Icon(_isObscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off),
+                              icon: Icon(
+                                _isObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.white,
+                              ),
                             ),
                             border: OutlineInputBorder(),
                             hintText: "Enter your Password",

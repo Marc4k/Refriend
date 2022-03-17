@@ -11,13 +11,11 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:refriend/constant/colors.dart';
 import 'package:refriend/constant/size.dart';
-import 'package:refriend/cubit/homeLoading_cubit.dart';
+import 'package:refriend/cubit/userData_cubit.dart';
 import 'package:refriend/cubit/profilPicture_cubit.dart.dart';
 import 'package:refriend/database/database_user.dart';
 import 'package:refriend/screens/SignUpIn/welcomeScreen.dart';
-import 'package:refriend/services/auth_service.dart';
 import 'package:refriend/services/user_service.dart';
-import 'package:refriend/widgets/custom_widgets.dart';
 import 'package:refriend/widgets/refriendCustomWidgets.dart';
 
 class Settings extends StatefulWidget {
@@ -158,8 +156,6 @@ class _SettingsState extends State<Settings> {
               if (userName.isEmpty) {
                 return Container();
               } else {
-                _name.text = userName;
-
                 return Padding(
                   padding: EdgeInsets.all(getwidth(context) / 20),
                   child: TextFormField(
@@ -175,15 +171,16 @@ class _SettingsState extends State<Settings> {
                     cursorColor: CustomColors.fontColor,
                     decoration: InputDecoration(
                       suffixIcon: IconButton(
-                          onPressed: () {
-                            UserService().chanceName(_name.text);
+                          onPressed: () async {
+                            await UserService().chanceName(_name.text);
                           },
                           icon: Icon(
                             Icons.check,
                             color: Colors.white,
                           )),
                       border: OutlineInputBorder(),
-                      labelText: 'new Name',
+                      hintText: userName,
+                      hintStyle: TextStyle(color: CustomColors.fontColor),
                       errorStyle: TextStyle(color: CustomColors.custom_pink),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(17)),
