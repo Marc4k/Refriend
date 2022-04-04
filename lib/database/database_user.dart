@@ -98,10 +98,4 @@ class DatabaseServiceUser {
     }
     return url;
   }
-
-  Future getNotificationToken() async {
-    String token = await FirebaseMessaging.instance.getToken();
-
-    print(token);
-  }
 }
