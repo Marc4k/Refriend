@@ -1,16 +1,19 @@
-# refriend
+# Refriend
 
-A new Flutter project.
+Diese App wurde für meine Diplomarbeit geschrieben. Diese App macht es möglich mit Freunden aktiviten auszumachen. Dies einfach und ohne großen aufwand.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Sign In/Up with Firebase Auth
+- Create Groups with Friends
+- Chat function
+- Live weather data
+- Picture upload to Firebase
+- Notifications with Firebase Hosting
 
-A few resources to get you started if this is your first Flutter project:
+## What I learned
+- how notifications works
+- flutter bloc
+- how to build responsive apps
+- how to structur big projects
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
